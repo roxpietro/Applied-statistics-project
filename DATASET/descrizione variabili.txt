@@ -1,0 +1,35 @@
+- area: Area designata
+- area_type: tipo di area
+- origin_area_type: tipo di area usato in device_home_areas e device_daytime_areas
+- date_range start: il periodo temporale di riferimento (inizio)
+- date_range_end: il periodo temporale di riferimento (fine)
+- day_counts: numero di giorni del periodo temporale
+- raw_stop_counts: numero di stop in quest'area nel periodo temporale (devono essersi fermati per almeno 1 minuto)
+- raw_device_counts: come sopra ma non gli stop totali ma le PERSONE (device)
+- stops_by_day: stop per giorno
+- stops_by_each_hour: stop per ora
+- device_home_areas: dove dormono i vari visitatori di quest'area (la home area è una misurazione fatta dalle 18 alle 7)
+- weekday_device_home_areas: come sopra ma dal lunedì al venerdì
+- weekend_device_home_areas: come sopra ma sabato e domenica
+- breakfast_device_home_areas: è la device home area dei device che si sono fermati in quest'area dalle 6 alle 10:59 del mattino
+- lunch_device_home_areas: come sopra dalle 11 alle 14:59
+- afternoon_tea_device_home_areas: come sopra dalle 15 alle 16:59
+- dinner_device_home_areas: come sopra dalle 17 alle 20:59
+- nightlife_device_home_areas: come sopra dalle 21 alle 24
+- work_hours_device_home_areas: come sopra dalle 7:30 alle 17:30
+- work_behavior_device_home_areas: come sopra ma comprede tutti i device che sono stati in quest'area per almeno 6 ore
+- device_daytime_areas: area di provenienza del daytime dei device che si sono fermati qui (daytime: tra le 9 e le 17)
+- distance_from_home: distanza media dalla home area di provenieza dei device che si sono fermati (non si considerano quelli con home entro 100 metri)
+- distance_from_primary_daytime_location: distanza media dalla daytime area di provenienza
+- median_dwell: tempo medio di permanenza
+- top_same_month_brand: percentuale di visitatori che si sono fermati nel locale (device fermati nell'area e nel locale/totale device fermati nell'area)
+- popularity_by_hour_monday: numero di stop per ogni ora del lunedì
+- popularity_by_hour_tuesday: numero di stop per ogni ora del martedì
+- popularity_by_hour_wednesday: numero di stop per ogni ora del mercoledì
+- popularity_by_hour_thursday: numero di stop per ogni ora del giovedì
+- popularity_by_hour_friday: numero di stop per ogni ora del venerdì
+- popularity_by_hour_saturday: numero di stop per ogni ora del sabato
+- popularity_by_hour_sunday: numero di stop per ogni ora della domenica
+- device_type: android vs ios dei device che si sono fermati nell'area
+- iso_country_code: tanto è sempre US
+- region: tanto è sempre NY

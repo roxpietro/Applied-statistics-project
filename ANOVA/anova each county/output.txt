@@ -1,0 +1,994 @@
+null device 
+          1 
+null device 
+          1 
+[1] "Bronx County"
+[1] 3.861745e-51 9.334662e-51 7.998890e-50 2.308807e-49 6.687205e-51 7.245851e-52 1.030614e-54
+[1]  9068355  7087449  7560851  7090109  8457094  8317465 11637350
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 109.01, df = 6, p-value < 2.2e-16
+
+              Df    Sum Sq  Mean Sq F value Pr(>F)
+days           6 7.864e+07 13106134   1.549  0.158
+Residuals   8043 6.804e+10  8459810               
+null device 
+          1 
+null device 
+          1 
+[1] "Suffolk County"
+[1] 2.414619e-21 3.664380e-21 3.039620e-20 4.544688e-21 1.354815e-20 8.650074e-21 4.093091e-19
+[1] 28284.85 24586.07 28198.03 28449.01 30399.03 29397.31 23672.40
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 25.422, df = 6, p-value = 0.0002852
+
+              Df    Sum Sq Mean Sq F value  Pr(>F)   
+days           6    598196   99699   3.616 0.00139 **
+Residuals   6986 192600737   27570                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Westchester County"
+[1] 3.228933e-30 7.033149e-30 1.571410e-29 3.649236e-29 1.524578e-29 2.669202e-29 6.857507e-29
+[1] 165035.6 141419.4 162117.0 158049.0 167590.0 143630.3 118153.5
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 31.222, df = 6, p-value = 2.299e-05
+
+              Df    Sum Sq Mean Sq F value Pr(>F)  
+days           6   1707967  284661   1.887 0.0792 .
+Residuals   4921 742364299  150856                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Montgomery County"
+[1] 3.781217e-09 3.541067e-09 5.121339e-09 2.528522e-09 2.460945e-09 1.792561e-09 3.178143e-09
+[1] 15570.75 12894.68 14934.05 16556.03 16708.65 13584.07 11668.86
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 2.169, df = 6, p-value = 0.9035
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    6082    1014    0.07  0.999
+Residuals   287 4178601   14560               
+null device 
+          1 
+null device 
+          1 
+[1] "Erie County"
+[1] 2.282317e-33 1.050690e-32 1.553409e-34 9.928173e-36 1.490598e-34 2.168688e-31 2.886259e-32
+[1] 56520.08 44716.32 54846.70 61044.68 60748.17 46781.73 42908.92
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 50.21, df = 6, p-value = 4.267e-09
+
+              Df    Sum Sq Mean Sq F value Pr(>F)  
+days           6    856879  142813    2.72 0.0122 *
+Residuals   5446 285966820   52510                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Ontario County"
+[1] 1.653791e-15 1.773269e-16 8.504451e-17 7.651669e-16 2.508879e-14 1.024808e-13 2.225752e-15
+[1] 32524.37 40048.24 57568.98 38959.55 28407.73 18681.13 21485.13
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 35.944, df = 6, p-value = 2.826e-06
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    41966    6994   0.206  0.975
+Residuals   567 19251685   33954               
+null device 
+          1 
+null device 
+          1 
+[1] "Cattaraugus County"
+[1] 1.961163e-13 2.104423e-13 1.563760e-13 1.877346e-13 1.774043e-13 3.128946e-13 3.049239e-13
+[1] 10645.064 10108.086 12672.100 11799.990 12250.591  7910.565  6680.423
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 12.807, df = 6, p-value = 0.0462
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   13912    2319   0.225  0.969
+Residuals   553 5693279   10295               
+null device 
+          1 
+null device 
+          1 
+[1] "Kings County"
+[1] 2.342429e-58 3.484635e-56 1.947644e-50 1.370565e-53 5.480163e-62 1.249546e-53 5.634863e-57
+[1] 2481439 1667339 1561396 1759728 2984702 1769333 1790500
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 377.8, df = 6, p-value < 2.2e-16
+
+               Df    Sum Sq  Mean Sq F value  Pr(>F)    
+days            6 9.617e+07 16027557   8.006 1.2e-08 ***
+Residuals   14546 2.912e+10  2002063                    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Livingston County"
+[1] 1.306005e-07 1.113613e-07 9.524879e-08 1.133559e-07 5.641198e-08 3.879247e-08 8.669429e-08
+[1] 2139.743 1901.877 2272.143 2114.933 2534.778 1915.226 1612.188
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 2.7247, df = 6, p-value = 0.8425
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6   1355   225.8   0.109  0.995
+Residuals   308 637599  2070.1               
+null device 
+          1 
+null device 
+          1 
+[1] "Tompkins County"
+[1] 2.189751e-14 5.757768e-14 1.140777e-13 1.304772e-13 6.296930e-14 4.287152e-14 4.399936e-14
+[1] 38329.56 27115.03 25442.95 27317.57 32377.20 28036.83 20940.09
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 6.7937, df = 6, p-value = 0.3403
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    15893    2649   0.093  0.997
+Residuals   441 12572232   28508               
+null device 
+          1 
+null device 
+          1 
+[1] "Rensselaer County"
+[1] 6.592917e-13 1.310212e-12 1.591966e-12 2.201184e-12 6.508251e-13 1.377080e-12 2.227107e-12
+[1] 29115.23 24751.79 29977.37 28140.20 30444.28 22987.91 20255.60
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 8.5812, df = 6, p-value = 0.1985
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    59531    9922   0.374  0.896
+Residuals   868 23023377   26525               
+null device 
+          1 
+null device 
+          1 
+[1] "Greene County"
+[1] 8.715732e-10 4.837047e-10 1.092102e-09 1.303601e-10 3.906970e-10 4.401116e-09 3.305184e-09
+[1]  935.3183  822.9959  833.7032 1236.0086 1121.4742  643.6187  545.1329
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 10.189, df = 6, p-value = 0.1169
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    431    71.8   0.082  0.998
+Residuals   294 257807   876.9               
+null device 
+          1 
+null device 
+          1 
+[1] "Broome County"
+[1] 1.075557e-11 7.582373e-12 7.220405e-12 7.414669e-12 1.541940e-11 3.863905e-11 2.288097e-10
+[1] 27919.36 24102.44 28513.19 29365.12 27489.39 18414.21 14336.12
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 41.225, df = 6, p-value = 2.615e-07
+
+              Df   Sum Sq Mean Sq F value Pr(>F)  
+days           6   333512   55585   2.287 0.0335 *
+Residuals   1421 34538387   24306                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Dutchess County"
+[1] 2.040889e-24 2.310466e-26 4.312478e-26 1.856953e-23 8.084077e-24 2.076418e-24 2.287284e-23
+[1] 26853.47 31143.75 34120.25 24219.58 26524.44 23459.00 17790.41
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 31.902, df = 6, p-value = 1.704e-05
+
+              Df   Sum Sq Mean Sq F value Pr(>F)
+days           6    46142    7690   0.292  0.941
+Residuals   1729 45475392   26302               
+null device 
+          1 
+null device 
+          1 
+[1] "Seneca County"
+[1] 9.404029e-09 6.321844e-09 5.423159e-09 6.906857e-09 7.052957e-09 7.261406e-09 6.605031e-09
+[1] 5334.652 5164.220 5647.913 5829.634 5692.057 4942.484 3966.090
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 1.7682, df = 6, p-value = 0.9397
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    1310     218   0.042      1
+Residuals   252 1316774    5225               
+null device 
+          1 
+null device 
+          1 
+[1] "Jefferson County"
+[1] 7.783035e-18 8.803311e-18 4.342271e-17 1.173872e-17 6.090671e-19 5.744532e-20 2.323787e-19
+[1]  57736.75  46182.64  44224.67  55430.48  94067.55 137488.04  78162.34
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 51.597, df = 6, p-value = 2.248e-09
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    27678    4613   0.063  0.999
+Residuals   665 48762785   73327               
+null device 
+          1 
+null device 
+          1 
+[1] "Cayuga County"
+[1] 2.395816e-16 2.523179e-17 7.212510e-18 6.123423e-18 9.838355e-18 6.254764e-17 4.094216e-17
+[1]  69248.72 105555.72 201640.41 216117.42 178667.33  77617.55  74773.92
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 55.645, df = 6, p-value = 3.434e-10
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    98096   16349   0.124  0.993
+Residuals   525 69271580  131946               
+null device 
+          1 
+null device 
+          1 
+[1] "Sullivan County"
+[1] 2.866474e-15 3.751069e-15 2.591059e-15 2.447822e-15 3.693285e-15 7.552617e-15 5.853237e-15
+[1] 2410.050 1921.819 2493.591 2818.113 2527.506 1823.714 1553.132
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 10.346, df = 6, p-value = 0.1108
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    1355   225.9   0.102  0.996
+Residuals   539 1197190  2221.1               
+null device 
+          1 
+null device 
+          1 
+[1] "Niagara County"
+[1] 9.556343e-16 2.118254e-20 7.855707e-22 3.571685e-26 7.203273e-15 3.346377e-14 2.324076e-13
+[1]  35541.07  51091.39  71678.56 261757.94  33920.80  28864.69  24414.49
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 443.8, df = 6, p-value < 2.2e-16
+
+              Df   Sum Sq Mean Sq F value Pr(>F)
+days           6   280306   46718   0.645  0.694
+Residuals   1218 88264793   72467               
+null device 
+          1 
+null device 
+          1 
+[1] "St. Lawrence County"
+[1] 7.379050e-16 3.047910e-16 4.340142e-17 2.429430e-17 1.669557e-15 3.501353e-16 4.419743e-16
+[1]  8902.374  8201.899 12260.982 12600.403  8098.888  7236.370  5820.661
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 24.395, df = 6, p-value = 0.0004416
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   14459    2410   0.267  0.952
+Residuals   742 6690887    9017               
+null device 
+          1 
+null device 
+          1 
+[1] "Onondaga County"
+[1] 2.259733e-22 1.108628e-22 2.243249e-23 4.649575e-22 7.074088e-21 2.043345e-19 2.094678e-18
+[1] 33136.55 27684.39 35709.34 31991.53 31926.66 24568.76 19731.69
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 46.036, df = 6, p-value = 2.913e-08
+
+              Df   Sum Sq Mean Sq F value Pr(>F)  
+days           6   327827   54638   1.868 0.0826 .
+Residuals   2653 77599840   29250                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Richmond County"
+[1] 9.408557e-12 1.621756e-11 3.308897e-11 2.094632e-11 3.877496e-11 2.391958e-10 1.677092e-10
+[1] 230023.7 189981.5 228273.0 224890.9 238217.8 227664.8 203057.0
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 6.3915, df = 6, p-value = 0.3808
+
+              Df    Sum Sq Mean Sq F value Pr(>F)
+days           6   1654919  275820   1.252  0.277
+Residuals   2338 515064308  220301               
+null device 
+          1 
+null device 
+          1 
+[1] "Chemung County"
+[1] 6.817521e-07 8.974264e-08 2.858443e-11 9.036807e-09 2.894806e-07 8.955372e-08 7.732340e-08
+[1] 19442.92 19196.70 31562.24 24525.30 20798.72 14617.41 14038.89
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 20.836, df = 6, p-value = 0.001964
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6   115539   19257   0.935  0.469
+Residuals   602 12399668   20597               
+null device 
+          1 
+null device 
+          1 
+[1] "Schenectady County"
+[1] 9.892775e-09 1.177308e-08 5.211710e-09 9.521499e-09 5.427934e-08 2.552907e-08 1.369274e-07
+[1] 37503.05 32101.70 41405.02 39357.62 37787.47 32634.14 27965.81
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 7.6727, df = 6, p-value = 0.2631
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6   162913   27152   0.764  0.598
+Residuals   959 34079409   35536               
+null device 
+          1 
+null device 
+          1 
+[1] "Columbia County"
+[1] 1.793836e-13 1.809713e-13 3.264974e-13 2.415036e-13 2.238744e-13 1.685762e-13 1.258353e-13
+[1] 6511.732 6053.963 5975.431 6395.591 6884.731 5458.787 4513.558
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.3783, df = 6, p-value = 0.7601
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    2231     372   0.062  0.999
+Residuals   420 2507628    5971               
+null device 
+          1 
+null device 
+          1 
+[1] "New York County"
+[1] 2.049263e-60 2.110786e-60 1.925249e-60 1.949679e-60 1.995853e-60 2.397147e-60 2.253379e-60
+[1] 1024663153  759444431 1088731116 1015972403  946171758  479284961  487139667
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 402.8, df = 6, p-value < 2.2e-16
+
+              Df    Sum Sq   Mean Sq F value Pr(>F)
+days           6 1.126e+09 187702356   0.226  0.968
+Residuals   8169 6.770e+12 828772498               
+null device 
+          1 
+null device 
+          1 
+[1] "Queens County"
+[1] 6.242491e-42 3.606185e-41 3.639944e-41 1.690864e-42 1.136412e-39 5.844585e-40 1.411992e-40
+[1] 1304084.7 1023397.9 1183539.6 1216437.6 1197273.8 1105986.5  995801.9
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 49.247, df = 6, p-value = 6.653e-09
+
+               Df    Sum Sq Mean Sq F value   Pr(>F)    
+days            6 3.443e+07 5738393   5.005 3.94e-05 ***
+Residuals   12208 1.400e+10 1146646                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Schoharie County"
+[1] 1.749580e-10 2.857622e-10 2.695620e-10 2.774404e-10 2.038103e-10 2.462904e-10 1.641749e-10
+[1] 1078.0526  923.1055  886.1392 1097.6633  974.3702  785.6545  645.6573
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.1533, df = 6, p-value = 0.7894
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    187    31.2   0.034      1
+Residuals   224 204501   912.9               
+null device 
+          1 
+null device 
+          1 
+[1] "Chenango County"
+[1] 7.454123e-12 7.116845e-12 8.234736e-12 6.976065e-12 5.063820e-12 8.868338e-12 1.435986e-11
+[1] 10387.213  9252.350 10562.442 11250.250 11263.348  6875.369  5659.686
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 9.9376, df = 6, p-value = 0.1273
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    6450    1075   0.115  0.995
+Residuals   350 3262533    9322               
+null device 
+          1 
+null device 
+          1 
+[1] "Orleans County"
+[1] 5.084661e-07 5.710482e-07 8.080005e-07 7.968062e-07 7.877061e-07 1.473267e-06 1.166425e-06
+[1] 2587.010 2186.155 2556.458 2617.172 2528.384 1828.130 1636.361
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.0688, df = 6, p-value = 0.8002
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    986   164.3   0.072  0.999
+Residuals   210 478190  2277.1               
+null device 
+          1 
+null device 
+          1 
+[1] "Wayne County"
+[1] 1.505552e-11 1.659636e-11 1.676092e-11 2.496733e-11 1.094743e-11 5.939648e-12 1.081286e-11
+[1] 3686.954 3038.851 3627.159 3464.754 4105.983 3674.614 2881.448
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 2.6673, df = 6, p-value = 0.8493
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    1650     275   0.079  0.998
+Residuals   427 1493265    3497               
+null device 
+          1 
+null device 
+          1 
+[1] "Yates County"
+[1] 2.199464e-07 2.232808e-07 2.708098e-07 2.689760e-07 2.586772e-07 2.514690e-07 2.246811e-07
+[1] 17471.47 18214.53 13866.68 14132.25 17016.78 17326.97 11856.16
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 1.4643, df = 6, p-value = 0.9618
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    2174     362   0.023      1
+Residuals   140 2197697   15698               
+null device 
+          1 
+null device 
+          1 
+[1] "Warren County"
+[1] 7.575436e-09 1.224483e-08 1.503116e-08 2.060798e-08 4.378996e-09 1.903920e-09 4.825256e-09
+[1] 17727.08 14748.04 16944.83 16486.52 23555.78 20516.05 14357.88
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 4.3781, df = 6, p-value = 0.6256
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   11296    1883   0.106  0.996
+Residuals   322 5719464   17762               
+null device 
+          1 
+null device 
+          1 
+[1] "Monroe County"
+[1] 1.808695e-34 2.246842e-38 5.023997e-42 1.576539e-42 1.311645e-38 1.981003e-33 1.866763e-34
+[1]  55196.84  65210.49 133075.21 141318.04  87402.80  49538.71  41748.51
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 428.63, df = 6, p-value < 2.2e-16
+
+              Df    Sum Sq Mean Sq F value Pr(>F)  
+days           6    974382  162397   1.982 0.0646 .
+Residuals   4256 348682283   81927                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Otsego County"
+[1] 1.445517e-12 2.141020e-12 1.710825e-12 8.882903e-13 1.163555e-12 1.160401e-12 2.050888e-12
+[1] 4626.548 3535.814 4087.128 4715.904 4213.385 3175.039 2243.503
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 10.331, df = 6, p-value = 0.1114
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    3021     504   0.133  0.992
+Residuals   385 1462853    3800               
+null device 
+          1 
+null device 
+          1 
+[1] "Saratoga County"
+[1] 1.761315e-15 4.028641e-16 2.254751e-16 9.080196e-17 1.933922e-18 1.087487e-19 4.222097e-17
+[1] 15310.21 15345.60 18962.33 20458.90 27554.43 26892.94 14556.88
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 29.964, df = 6, p-value = 3.994e-05
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    39718    6620   0.333   0.92
+Residuals   966 19193218   19869               
+null device 
+          1 
+null device 
+          1 
+[1] "Albany County"
+[1] 1.722845e-32 1.704660e-32 1.664005e-32 1.664212e-32 1.656080e-32 1.663154e-32 1.637162e-32
+[1] 46829559 41568243 56923612 54745834 55469181 42956727 37181043
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 19.048, df = 6, p-value = 0.004083
+
+              Df    Sum Sq  Mean Sq F value Pr(>F)
+days           6 4.189e+06   698215   0.015      1
+Residuals   1638 7.855e+10 47953457               
+null device 
+          1 
+null device 
+          1 
+[1] "Clinton County"
+[1] 2.224404e-13 1.689953e-13 4.942215e-13 8.307704e-13 9.197705e-13 1.027129e-12 1.329410e-12
+[1] 14838.417 12644.747 13387.362 12791.523 11551.364  8662.957  6316.624
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 18.382, df = 6, p-value = 0.005345
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   20484    3414   0.298  0.938
+Residuals   532 6094667   11456               
+null device 
+          1 
+null device 
+          1 
+[1] "Essex County"
+[1] 9.085654e-11 8.869217e-11 9.553242e-11 7.657290e-11 7.516309e-11 7.642390e-11 6.480350e-11
+[1] 1056.6783  886.4601  970.1021 1127.2960 1474.8798 1482.0977 1030.1341
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 4.5071, df = 6, p-value = 0.6084
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    357    59.5   0.052  0.999
+Residuals   259 297023  1146.8               
+null device 
+          1 
+null device 
+          1 
+[1] "Fulton County"
+[1] 6.574401e-08 6.688798e-08 1.551345e-08 2.304516e-08 5.583862e-08 6.233551e-08 4.108164e-08
+[1] 20519.30 18043.90 24855.44 23358.10 19260.01 17574.20 15833.82
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 4.2334, df = 6, p-value = 0.6451
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   15851    2642   0.133  0.992
+Residuals   385 7669463   19921               
+null device 
+          1 
+null device 
+          1 
+[1] "Madison County"
+[1] 2.940385e-12 1.136050e-11 3.470065e-11 5.922834e-11 2.990706e-11 7.405944e-12 8.226662e-12
+[1] 12333.610  8054.456  9252.735  8540.175  8645.165  6951.925  6888.106
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 5.5779, df = 6, p-value = 0.4721
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    4382     730   0.084  0.998
+Residuals   322 2790644    8667               
+null device 
+          1 
+null device 
+          1 
+[1] "Schuyler County"
+[1] 7.460095e-07 8.598626e-07 8.026139e-07 7.936212e-07 8.235575e-07 7.326344e-07 7.723124e-07
+[1] 1128.6571  886.4085 1029.1090 1138.1567 1480.8072 1929.5531 1411.2334
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.6904, df = 6, p-value = 0.7185
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    727   121.2   0.094  0.997
+Residuals   126 162071  1286.3               
+null device 
+          1 
+null device 
+          1 
+[1] "Lewis County"
+[1] 2.909261e-09 2.992775e-09 2.522247e-09 3.222021e-09 2.596217e-09 5.670072e-09 4.448563e-09
+[1] 499.6614 447.2325 631.1257 432.5754 606.9539 191.9522 162.3537
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 15.83, df = 6, p-value = 0.0147
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    176    29.3   0.069  0.999
+Residuals   147  62409   424.6               
+null device 
+          1 
+null device 
+          1 
+[1] "Herkimer County"
+[1] 4.672670e-10 3.053821e-10 5.353583e-10 6.670663e-10 2.362431e-10 7.938667e-10 1.585357e-09
+[1] 21952.21 19128.43 21986.77 20988.34 25764.95 16339.91 13157.18
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 8.6014, df = 6, p-value = 0.1973
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   24932    4155   0.209  0.974
+Residuals   427 8498386   19903               
+null device 
+          1 
+null device 
+          1 
+[1] "Tioga County"
+[1] 3.854207e-10 2.715978e-10 1.953735e-10 3.496352e-10 2.692034e-10 2.877939e-10 2.042628e-10
+[1] 6143.214 5716.220 7908.467 6739.701 7504.405 5330.161 4879.812
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 4.1266, df = 6, p-value = 0.6595
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    2954     492   0.078  0.998
+Residuals   308 1945767    6317               
+null device 
+          1 
+null device 
+          1 
+[1] "Chautauqua County"
+[1] 8.531267e-13 2.856648e-12 3.018130e-12 2.203249e-12 5.096171e-12 7.926972e-12 3.501599e-12
+[1] 22885.96 18394.64 21171.63 21777.67 20523.25 14851.10 13868.89
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 13.331, df = 6, p-value = 0.03807
+
+             Df   Sum Sq Mean Sq F value Pr(>F)
+days          6    59697    9950   0.522  0.792
+Residuals   847 16150248   19068               
+null device 
+          1 
+null device 
+          1 
+[1] "Wyoming County"
+[1] 1.246102e-09 9.522572e-10 1.033521e-09 8.942479e-10 1.122610e-09 1.019284e-09 2.001958e-09
+[1] 1072.8346 1007.1588 1074.2063 1276.2563 1281.0006 1174.8053  849.6444
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 2.5991, df = 6, p-value = 0.8572
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    312    52.1   0.047      1
+Residuals   301 332644  1105.1               
+null device 
+          1 
+null device 
+          1 
+[1] "Ulster County"
+[1] 1.109717e-18 1.478016e-18 7.785757e-19 1.525769e-18 1.355008e-18 1.951606e-18 3.696433e-18
+[1] 8572.628 7108.878 9266.031 8374.367 8997.675 7031.785 5782.731
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 12.543, df = 6, p-value = 0.0509
+
+              Df  Sum Sq Mean Sq F value Pr(>F)
+days           6   10378    1730    0.22  0.971
+Residuals   1057 8325248    7876               
+null device 
+          1 
+null device 
+          1 
+[1] "Washington County"
+[1] 1.603394e-10 1.585316e-10 1.389939e-10 1.500367e-10 1.683070e-10 1.339125e-10 1.228313e-10
+[1] 3690.837 3199.333 3845.763 3713.640 3824.727 3548.741 3057.996
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 1.0598, df = 6, p-value = 0.9832
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6     543      91   0.025      1
+Residuals   315 1119647    3554               
+null device 
+          1 
+null device 
+          1 
+[1] "Steuben County"
+[1] 8.628668e-13 9.481332e-13 1.235815e-12 1.083782e-12 1.103588e-12 5.982618e-13 1.041529e-12
+[1] 15070.158 12700.990 13980.536 15056.502 14642.456 10447.501  8627.346
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 11.686, df = 6, p-value = 0.06936
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   30363    5061   0.391  0.885
+Residuals   637 8237820   12932               
+null device 
+          1 
+null device 
+          1 
+[1] "Oswego County"
+[1] 2.091363e-12 1.607601e-12 1.890301e-12 1.846417e-12 1.941628e-12 6.714114e-12 7.103664e-12
+[1] 12971.940 11391.443 12822.275 13259.725 13248.915  8173.930  7420.274
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 13.676, df = 6, p-value = 0.03347
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   17600    2933   0.259  0.956
+Residuals   567 6422369   11327               
+null device 
+          1 
+null device 
+          1 
+[1] "Oneida County"
+[1] 1.879513e-29 1.922416e-29 1.986260e-29 1.898051e-29 1.847280e-29 1.789267e-29 1.738623e-29
+[1] 47520297 44042128 50707989 47902554 56798149 53062093 63135747
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 8.3337, df = 6, p-value = 0.2147
+
+              Df    Sum Sq  Mean Sq F value Pr(>F)
+days           6 8.601e+05   143347   0.003      1
+Residuals   1302 6.755e+10 51881280               
+null device 
+          1 
+null device 
+          1 
+[1] "Cortland County"
+[1] 4.189632e-07 1.518864e-06 2.010025e-06 1.556141e-06 1.118799e-06 3.444158e-06 3.396338e-06
+[1] 26290.81 21145.07 22773.29 23749.03 24404.68 16202.99 12788.01
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 8.4973, df = 6, p-value = 0.2039
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   39676    6613   0.314  0.929
+Residuals   322 6778278   21051               
+null device 
+          1 
+null device 
+          1 
+[1] "Nassau County"
+[1] 3.023327e-31 4.199674e-34 9.622038e-34 5.535703e-33 7.131236e-31 4.290306e-28 1.468462e-28
+[1] 73710.88 68414.09 77903.16 77450.22 78725.83 71304.45 59425.86
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 32.891, df = 6, p-value = 1.1e-05
+
+              Df    Sum Sq Mean Sq F value   Pr(>F)    
+days           6   2527591  421265   5.817 4.64e-06 ***
+Residuals   7994 578919176   72419                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+null device 
+          1 
+[1] "Orange County"
+[1] 1.705096e-21 1.462080e-21 2.342766e-21 1.829595e-21 6.620720e-22 3.737416e-22 4.002369e-21
+[1] 27288.36 23930.33 27197.78 27711.32 31405.78 28170.66 21084.20
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 13.205, df = 6, p-value = 0.03989
+
+              Df   Sum Sq Mean Sq F value Pr(>F)
+days           6    71486   11914   0.446  0.848
+Residuals   1925 51366816   26684               
+null device 
+          1 
+null device 
+          1 
+[1] "Allegany County"
+[1] 3.424648e-12 2.927529e-12 1.617203e-12 2.633209e-12 4.040628e-12 8.929050e-13 1.314814e-12
+[1] 313.2224 279.6761 383.0572 348.6147 352.2001 431.3159 332.2859
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 2.4822, df = 6, p-value = 0.8705
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6     51     8.6   0.025      1
+Residuals   301 104936   348.6               
+null device 
+          1 
+null device 
+          1 
+[1] "Franklin County"
+[1] 1.662306e-09 1.384206e-09 1.644079e-09 1.458353e-09 1.665435e-09 1.847136e-09 2.375605e-09
+[1] 5990.312 5601.363 5864.861 6716.728 6736.816 4920.571 3314.315
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 6.6432, df = 6, p-value = 0.3551
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    4202     700   0.125  0.993
+Residuals   287 1604944    5592               
+null device 
+          1 
+null device 
+          1 
+[1] "Putnam County"
+[1] 7.699695e-06 6.213064e-06 3.732189e-06 4.296199e-06 5.803703e-06 3.400072e-06 8.505199e-07
+[1] 2247.834 1901.928 2382.481 2380.050 2453.575 2446.546 2376.852
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 1.5532, df = 6, p-value = 0.9559
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6    1864   310.7   0.134  0.992
+Residuals   476 1100870  2312.8               
+null device 
+          1 
+null device 
+          1 
+[1] "Delaware County"
+[1] 7.688360e-13 8.157848e-13 9.000770e-13 6.787582e-13 6.786604e-13 4.291687e-13 3.798897e-13
+[1] 1832.154 1609.294 1763.875 1970.061 2111.718 1853.496 1340.396
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.4142, df = 6, p-value = 0.7553
+
+             Df Sum Sq Mean Sq F value Pr(>F)
+days          6    662   110.3   0.062  0.999
+Residuals   378 673974  1783.0               
+null device 
+          1 
+null device 
+          1 
+[1] "Genesee County"
+[1] 3.786438e-09 4.928892e-09 5.816580e-09 4.381578e-09 5.336010e-09 4.999659e-09 6.349452e-09
+[1] 15477.674 14287.864 16093.898 16377.393 15541.348 11546.173  8675.923
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 8.3354, df = 6, p-value = 0.2145
+
+             Df  Sum Sq Mean Sq F value Pr(>F)
+days          6   23180    3863   0.276  0.948
+Residuals   392 5488015   14000               
+null device 
+          1 
+null device 
+          1 
+[1] "Hamilton County"
+[1] 0.5143511 0.5982591 0.8822472 0.6116838 0.1872002 0.3223225 0.6154532
+[1] 0.09517200 0.07133054 0.05829787 0.08025527 0.16827219 0.18465352 0.10178171
+
+	Bartlett test of homogeneity of variances
+
+data:  dev and days
+Bartlett's K-squared = 3.7774, df = 6, p-value = 0.7068
+
+            Df Sum Sq Mean Sq F value Pr(>F)
+days         6  0.245 0.04086   0.377   0.89
+Residuals   49  5.318 0.10854               
