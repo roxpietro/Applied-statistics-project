@@ -345,6 +345,8 @@ Patterns_NY$top_same_day_brand[ind]<-list(as.double(aa[seq(2,length(aa),by=2)]))
 Patterns_NY$top_same_day_brand_name[ind]<-list(as.character(aa[seq(1,length(aa),by=2)]))
 
 
+#new rows to be cancelled because few data available
+Patterns_NY <- Patterns_NY[-8029,]
 
 save(Patterns_NY, file = "Patterns_NY.RData")
 
