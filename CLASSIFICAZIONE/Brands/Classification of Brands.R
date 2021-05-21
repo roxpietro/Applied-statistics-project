@@ -1,7 +1,7 @@
 #################### SIGNIFICANT BRANDS #######################
 
 # set working directory data
-setwd("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto")
+setwd("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso")
 
 # Load Dataset
 load("Patterns_NY.RData")
@@ -67,6 +67,7 @@ top_brands_ny=top_brands_ny[-last_ones]
 top_brands_ny=sort(top_brands_ny,decreasing = TRUE)
 
 # build the dataframe
+setwd("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/CLASSIFICAZIONE/Brands")
 brands<-read.delim(file = "Classificazione brands.txt", header = FALSE, sep=":")
 
 
@@ -92,11 +93,12 @@ BRANDS_MANHATTAN = data.frame(top_brand_ny,vect_freq_brands,rep(vect_brands_ny_c
 colnames(BRANDS_MANHATTAN)<- c("Names","Frequency","Category")
 BRANDS_MANHATTAN <- BRANDS_MANHATTAN[order(BRANDS_MANHATTAN$Frequency, decreasing = TRUE),]
 rm(Patterns_NY)
-load("New York County.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData")
+
 
 
 # order patterns_ny and census_block_ny by CBG of New York County
-sub_patt=sub_patt[order(sub_patt$area),]
+New_York_County=New_York_County[order(New_York_County$area),]
 CBG_ny_index = which(census_blocks_ny$County=="New York County")
 CBG_ny = census_blocks_ny[CBG_ny_index,]
 
@@ -105,7 +107,7 @@ CBG_ny = census_blocks_ny[CBG_ny_index,]
 remove=c()
 k=1
 for (i in 1:1170) {
-  index=which(sub_patt$area==CBG_ny$CensusBlockGroup[i])
+  index=which(New_York_County$area==CBG_ny$CensusBlockGroup[i])
   if (length(index)==0) {
     remove[k]=i
     k=k+1
@@ -134,7 +136,7 @@ cols<- levels(factor(BRANDS_MANHATTAN$Category))
 # k=0
 # for (i in CBG_ny_index) {
 #   k=k+1
-#   index_brands=which(BRANDS_MANHATTAN$Names==sub_patt$top_same_month_brand_name[k][[1]][1])
+#   index_brands=which(BRANDS_MANHATTAN$Names==New_York_County$top_same_month_brand_name[k][[1]][1])
 #   
 #   if(length(index_brands)!=0) {
 #   #assegno il colore
@@ -160,7 +162,7 @@ x11()
 k=0
 for (i in CBG_ny_index) {
   k=k+1
-  index_brands=which(BRANDS_MANHATTAN$Names==sub_patt$top_same_month_brand_name[k][[1]][1])
+  index_brands=which(BRANDS_MANHATTAN$Names==New_York_County$top_same_month_brand_name[k][[1]][1])
   
   #assegno il colore
   col=which(BRANDS_MANHATTAN$Category[index_brands]==cols)
@@ -177,14 +179,14 @@ colors = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)]
 colors[1]="yellow"
 colors[2]="pink"
 colors[3]="red"
-colors[4]="cyan"
-colors[5]="green3"
+colors[4]="green3"
+colors[5]="cyan"
 colors[6]="blue"
 x11()
 k=0
 for (i in CBG_ny_index) {
   k=k+1
-  index_brands=which(BRANDS_MANHATTAN$Names==sub_patt$top_same_month_brand_name[k][[1]][1])
+  index_brands=which(BRANDS_MANHATTAN$Names==New_York_County$top_same_month_brand_name[k][[1]][1])
   
   #assegno il colore
   #col=which(BRANDS_MANHATTAN$Category[index_brands]==cols)
@@ -203,7 +205,7 @@ x11()
 k=0
 for (i in CBG_ny_index) {
   k=k+1
-  if("Starbucks"==sub_patt$top_same_month_brand_name[k][[1]][1])
+  if("Starbucks"==New_York_County$top_same_month_brand_name[k][[1]][1])
     col="green3"
   else 
     col="white"
@@ -226,7 +228,7 @@ x11()
 k=0
 for (i in CBG_ny_index) {
   k=k+1
-  if("McDonald's"==sub_patt$top_same_month_brand_name[k][[1]][1])
+  if("McDonald's"==New_York_County$top_same_month_brand_name[k][[1]][1])
     col="yellow"
   else 
     col="white"
@@ -239,42 +241,42 @@ legend(legend="McDonald's","bottomright", fill="red")
 
 #---------------------------------------------------------------------------------------------------
 ### BRANDS ###
-brands<-brands[2]
-
-BRANDS = data.frame(top_brands,brands)
-
-colnames(BRANDS)<- c("Names","Frequeny","Category")
-
-attach(BRANDS)
-
-rm(brands)
-
-remove<-c(which(Names=="Fastrac"), which(Names=="Boys & Girls Clubs of America"), which(Names=="Blink Fitness"),
-          which(Names=="United States Postal Service (USPS)"), which(Names=="CrossFit"), which(Names=="Advance Auto Parts"),
-          which(Names=="SmartStyle Family Hair Salons"), which(Names=="Subway"),which(Names=="Speedway"))
-
-BRANDS<-BRANDS[-remove,]
-
-
-
-# Plot by Categories
-
-x11()
-k=0
-for (i in 1:dim(census_blocks_ny)[1]) {
-  k=k+1
-  index_brands=which(BRANDS$Names==sub_patt$top_same_month_brand_name[k][[1]][1])
-  
-  #assegno il colore
-  col=which(BRANDS_MANHATTAN$Category[index_brands]==cols)
-  plot(st_geometry(census_blocks_ny$geometry[i]), xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = myColors[col])
-  par(new=T)
-}
-title(main = "NY country Categories", xlab = "Longitude", ylab = "Latitude")
-legend(legend=cols,"bottomright", fill=myColors)
-
-
-
-
-detach(BRANDS)
-
+# brands<-brands[2]
+# 
+# BRANDS = data.frame(top_brands,brands)
+# 
+# colnames(BRANDS)<- c("Names","Frequeny","Category")
+# 
+# attach(BRANDS)
+# 
+# rm(brands)
+# 
+# remove<-c(which(Names=="Fastrac"), which(Names=="Boys & Girls Clubs of America"), which(Names=="Blink Fitness"),
+#           which(Names=="United States Postal Service (USPS)"), which(Names=="CrossFit"), which(Names=="Advance Auto Parts"),
+#           which(Names=="SmartStyle Family Hair Salons"), which(Names=="Subway"),which(Names=="Speedway"))
+# 
+# BRANDS<-BRANDS[-remove,]
+# 
+# 
+# 
+# # Plot by Categories
+# 
+# x11()
+# k=0
+# for (i in 1:dim(census_blocks_ny)[1]) {
+#   k=k+1
+#   index_brands=which(BRANDS$Names==New_York_County$top_same_month_brand_name[k][[1]][1])
+#   
+#   #assegno il colore
+#   col=which(BRANDS_MANHATTAN$Category[index_brands]==cols)
+#   plot(st_geometry(census_blocks_ny$geometry[i]), xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = myColors[col])
+#   par(new=T)
+# }
+# title(main = "NY country Categories", xlab = "Longitude", ylab = "Latitude")
+# legend(legend=cols,"bottomright", fill=myColors)
+# 
+# 
+# 
+# 
+# detach(BRANDS)
+# 

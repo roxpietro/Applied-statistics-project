@@ -4,30 +4,33 @@
 library(car)
 
 # Loading  
-load("New York County.RData")
-NY_county <- sub_patt
-rm(sub_patt)
-attach(NY_county)
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData")
+
+New_York_County<-New_York_County[-92,]
+attach(New_York_County)
 
 LM_1=data.frame(median_dwell,raw_stop_counts,raw_device_counts,distance_from_home,distance_from_primary_daytime_location)
 
-detach(NY_county)
+detach(New_York_County)
 attach(LM_1)
 
 
-## vediamo come sono distribuiti i dati (male)
-pairs(LM_1)
+## vediamo come sono distribuiti i dati 
+pairs(LM_1) #(male)
 
+################## PRIMO MODELLO CON 2 FEATURES ################################
 
-##facciamo un linear model solo con le prime due variabili (risultati molto bassi)
+# facciamo un linear model solo con le prime due variabili (risultati molto bassi)
 mod=lm(formula = median_dwell ~ raw_stop_counts + raw_device_counts)
 summary(mod)
 
+# Dobbiamo trovare una trasformazione che renda il modello più lineare
 
-##Dobbiamo trovare una trasformazione che renda il modello più lineare
-
+#-------------------------------------------------------------------------------
 #1. decidiamo di fare il boxcox del modello (univariate)
-b=boxcox(mod)
+#-------------------------------------------------------------------------------
+
+b=boxCox(mod)
 best_lambda_ind=which.max(b$y)
 lambda=b$x[best_lambda_ind]
 
@@ -43,11 +46,11 @@ new_raw_device_counts = box_cox(raw_device_counts,lambda)
 new_median_dwell = box_cox(median_dwell,lambda)
 
 mod_boxcox=lm(formula = new_median_dwell ~ new_raw_stop_counts + new_raw_device_counts)
-summary(mod_boxcox) #0.39
+summary(mod_boxcox) #0.38
 
-
+#-------------------------------------------------------------------------------
 #2. Proviamo a vedere se cambia qualcosa con il Powertransformation di ogni variabile (univariate)
-
+#--------------------------------------------------------------------------------
 lambda.raw_stop <- powerTransform(raw_stop_counts)
 lambda.raw_device <- powerTransform(raw_device_counts)
 lambda.median <- powerTransform(median_dwell)
@@ -57,49 +60,78 @@ bc.raw_device <- bcPower(raw_device_counts, lambda.raw_device$lambda)
 bc.median <- bcPower(median_dwell, lambda.median$lambda)
 
 mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
-summary(mod_power)
+summary(mod_power) #0.475
 
 mod_power=lm(formula = median_dwell ~ bc.raw_stop + bc.raw_device)
-summary(mod_power) #0.29
+summary(mod_power) #0.496
 
 mod_power=lm(formula = bc.median ~ raw_stop_counts + raw_device_counts)
-summary(mod_power) #0.09
+summary(mod_power) #0.03
 
 mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
-summary(mod_power) #0.33
+summary(mod_power) #0.478
 
-#il miglior risultato ci viene con il boxcox e abbiamo R^2=0.39
-
+#----------------------------------------------------------------------------
 #3. Multivariate case
+#----------------------------------------------------------------------------
 lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,median_dwell))
+lambda_multivariate
 
-BC.stop <- bcPower(raw_stop_counts, lambda_multivariate$lambda[1])
-BC.device <- bcPower(raw_device_counts, lambda_multivariate$lambda[2])
+BC.stop <- bcPower(raw_stop_counts, 0)
+BC.device <- bcPower(raw_device_counts, 0)
 BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[3])
 
 mod_multivariate=lm(formula = BC.median ~ BC.stop + BC.device)
-summary(mod_multivariate)
-# 
-# 
+summary(mod_multivariate) #0.692
+
 # #questo ultimo metodo è quello che mi da un R^2 maggiore 
+######################################### SECONDO MODELLO: AGGIUNGO FEATURES ##########################################
 
 #4. Provo con questo metodo ad aggiungere features
 
 lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,distance_from_home,distance_from_primary_daytime_location,median_dwell))
+lambda_multivariate
 
 BC.stop <- bcPower(raw_stop_counts, 0)
-BC.device <- bcPower(raw_device_counts, 0) #capire se tenere il reale o metterlo a zero
+BC.device <- bcPower(raw_device_counts, 0) 
+BC.home <- bcPower(distance_from_home, lambda_multivariate$lambda[3])
+BC.primary <- bcPower(distance_from_primary_daytime_location, lambda_multivariate$lambda[4])
 BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[5])
-BC.home <- bcPower(distance_from_home, 0)
-BC.primary <- bcPower(distance_from_primary_daytime_location, 0)
 
-mod_multivariate_complete=lm(formula = BC.median ~ BC.stop + BC.device + BC.home)
-summary(mod_multivariate_complete) #0.62
+mod_multivariate_complete=lm(formula = BC.median ~ BC.stop + BC.device + BC.home + BC.primary)
+summary(mod_multivariate_complete) #0.6932
 
-#le ultime due features sono correlate come avevamo visto dal pairs quindi a priori dovremmo togliene una delle 2. 
-#abbiamo verificato che se togliamo l'ultima variabile R^2 non cambia di molto quindi possiamo toglierla
+vif(mod_multivariate_complete)
 
-####dobbiamo fare un test statistico che ci dica che le 2 variabili siano uguali
+par(mfrow=c(2,2))
+plot(mod_multivariate_complete)
+
+shapiro.test(residuals(mod_multivariate_complete))
+
+#---------------------------------------------------------------------------------------
+# Facciamo PCA per vedere se eliminiamo la collinearità -> PROBLEMA
+#---------------------------------------------------------------------------------------
+
+model.pca <- princomp(cbind(BC.stop,BC.device,BC.home,BC.primary), scores=TRUE)
+summary(model.pca)
+model.pca$load
+
+sp1.pc <- model.pca$scores[,1]
+sp2.pc <- model.pca$scores[,2]
+sp3.pc <- model.pca$scores[,3]
+sp4.pc <- model.pca$scores[,4]
+# first component explains all data more or less
+# scores are used as new betas
+
+# Now we estimate the model by inserting the PCs instead of the 
+# original regressors 
+# Model: y = b0 + b1*PC1+ b2*PC2 + eps, eps~N(0,sigma^2)
+fm.pc <- lm(BC.median ~ sp1.pc + sp2.pc + sp3.pc +  sp4.pc)
+
+summary(fm.pc) 
+
+#--------------------------------------------------------------------------------------------
+
 
 ##togliamo gli outlier 
 # 
@@ -149,17 +181,17 @@ summary(mod_multivariate_complete) #0.62
 # #non cambia assolutamente nulla
 # 
 
-
-weekday_home=integer(dim(Patterns_NY)[1])
- 
-for (i in 1:dim(Patterns_NY)[1]) {
-     for (j in 1: dim (Patterns_NY) [1] ){
-         if( is.na( weekday_device_home_areas [[j]] [area[i]] ) == FALSE  ) {
-           weekday_home[i]=weekday_home[i] + weekday_device_home_areas [[j]] [area[i]]
-         }
-     }
- }
-   
+# 
+# weekday_home=integer(dim(Patterns_NY)[1])
+#  
+# for (i in 1:dim(Patterns_NY)[1]) {
+#      for (j in 1: dim (Patterns_NY) [1] ){
+#          if( is.na( weekday_device_home_areas [[j]] [area[i]] ) == FALSE  ) {
+#            weekday_home[i]=weekday_home[i] + weekday_device_home_areas [[j]] [area[i]]
+#          }
+#      }
+#  }
+#    
 
 
 
