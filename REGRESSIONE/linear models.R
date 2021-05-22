@@ -4,8 +4,8 @@
 library(car)
 
 # Loading  
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData")
-
+#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
 New_York_County<-New_York_County[-92,]
 attach(New_York_County)
 
@@ -24,7 +24,7 @@ pairs(LM_1) #(male)
 mod=lm(formula = median_dwell ~ raw_stop_counts + raw_device_counts)
 summary(mod)
 
-# Dobbiamo trovare una trasformazione che renda il modello più lineare
+# Dobbiamo trovare una trasformazione che renda il modello pi? lineare
 
 #-------------------------------------------------------------------------------
 #1. decidiamo di fare il boxcox del modello (univariate)
@@ -84,7 +84,7 @@ BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[3])
 mod_multivariate=lm(formula = BC.median ~ BC.stop + BC.device)
 summary(mod_multivariate) #0.692
 
-# #questo ultimo metodo è quello che mi da un R^2 maggiore 
+# #questo ultimo metodo ? quello che mi da un R^2 maggiore 
 ######################################### SECONDO MODELLO: AGGIUNGO FEATURES ##########################################
 
 #4. Provo con questo metodo ad aggiungere features
@@ -109,7 +109,7 @@ plot(mod_multivariate_complete)
 shapiro.test(residuals(mod_multivariate_complete))
 
 #---------------------------------------------------------------------------------------
-# Facciamo PCA per vedere se eliminiamo la collinearità -> PROBLEMA
+# Facciamo PCA per vedere se eliminiamo la collinearit? -> PROBLEMA
 #---------------------------------------------------------------------------------------
 
 model.pca <- princomp(cbind(BC.stop,BC.device,BC.home,BC.primary), scores=TRUE)
@@ -149,15 +149,15 @@ summary(fm.pc)
 # mod_multivariate_complete_lev = lm(formula = BC.median ~ BC.stop + BC.device + BC.home, subset = ( lev < 2*p/n ) )
 # summary(mod_multivariate_complete_lev) #mi sembra che togliamo un sacco di dati e non cambia R^2, sempre 0.61
 # 
-# #serve per vedere se togliendo i lev cambia di molto a lui viene 22% (che è tanto)
+# #serve per vedere se togliendo i lev cambia di molto a lui viene 22% (che ? tanto)
 # abs((mod_multivariate_complete$coefficients-mod_multivariate_complete_lev$coefficients)/mod_multivariate_complete$coefficients)
 # 
 # colors = rep( 'black', nrow(LM_1) )
 # colors[ watchout_ids_lev ] = 'blue'
 # pairs( LM_1 , pch=16,col=colors,cex=1 )
 # 
-# #da qua sembra che togliere i leverages non servi a nulla però c'è qualcosa che non torna facendo il pairs
-# #perchè quelli che sono evidentemente outliers non vengono tolti
+# #da qua sembra che togliere i leverages non servi a nulla per? c'? qualcosa che non torna facendo il pairs
+# #perch? quelli che sono evidentemente outliers non vengono tolti
 # 
 # 
 # #2. facciamo la cook distance
