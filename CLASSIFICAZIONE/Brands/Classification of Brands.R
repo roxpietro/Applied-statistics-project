@@ -179,8 +179,8 @@ colors = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)]
 colors[1]="yellow"
 colors[2]="pink"
 colors[3]="red"
-colors[4]="green3"
-colors[5]="cyan"
+colors[4]="cyan"
+colors[5]="green3"
 colors[6]="blue"
 x11()
 k=0
