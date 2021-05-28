@@ -6,6 +6,7 @@ library(geosphere)
 library(sf)
 library(lattice)           ## Data management
 library(rgdal)
+library(ggplot2)
 
 
 # fra
