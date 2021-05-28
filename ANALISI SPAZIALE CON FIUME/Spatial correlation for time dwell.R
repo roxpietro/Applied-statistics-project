@@ -5,6 +5,7 @@
 library(geosphere)
 library(sf)
 library(lattice)           ## Data management
+library(rgdal)
 
 
 # fra
@@ -45,6 +46,7 @@ rm(census_metadata)
 # Save centroid coordinates of each CBG
 centroids <- st_centroid(CBG_ny$geometry, of_largest_polygon = FALSE)
 
+
 x11()
 plot(st_geometry(CBG_ny$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ")
 par(new=T)
@@ -56,35 +58,50 @@ coord <- as.numeric(unlist(centroids))
 coord.x <- coord[seq(1,length(coord),by=2)]
 coord.y <- coord[seq(2,length(coord),by=2)]
 
-data_spatial <-data.frame(CBG_ny, New_York_County$median_dwell, coord.x, coord.y)
-data_spatial2 <-data.frame(New_York_County$median_dwell, coord.x, coord.y)
+coord<-SpatialPoints(cbind(coord.x,coord.y),proj4string=CRS("+proj=longlat"))
+coord.UTM <- spTransform(coord, CRS("+init=epsg:32748"))
+
+data_spatial <-data.frame(CBG_ny, New_York_County$median_dwell, coord.UTM)
+data_spatial2 <-data.frame(New_York_County$median_dwell, coord.UTM)
 
 coordinates(data_spatial2) <- c('coord.x','coord.y')
+
+
 x11()
-bubble(data_spatial, 'New_York_County.median_dwell', do.log=TRUE,key.space='bottom')
-#plot(st_geometry(data_spatial["median_dwell"]))
+bubble(data_spatial2, 'New_York_County.median_dwell', do.log=TRUE,key.space='bottom')
+spplot(data_spatial2,'New_York_County.median_dwell')
 
-i_range1<-which(data_spatial$New_York_County.median_dwell<40 )
-i_range2<-which(data_spatial$New_York_County.median_dwell<120 & data_spatial$New_York_County.median_dwell>=40 )
-i_range3<-which(data_spatial$New_York_County.median_dwell>=120 )
+median_dwell <-data_spatial2$New_York_County.median_dwell
+
+ggplot() + 
+  geom_sf(data = data_spatial$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="blue")
 
 
+# i_range1<-which(data_spatial$New_York_County.median_dwell<40 )
+# i_range2<-which(data_spatial$New_York_County.median_dwell<120 & data_spatial$New_York_County.median_dwell>=40 )
+# i_range3<-which(data_spatial$New_York_County.median_dwell>=120 )
+# 
+# 
+# 
+# library(viridis)
+# colors <- rainbow(3)
+# x11()
+# plot(st_geometry(CBG_ny$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ")
+# par(new=T)
+# plot(st_geometry(CBG_ny$geometry[i_range1]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[1])
+# par(new=T)
+# plot(st_geometry(CBG_ny$geometry[i_range2]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[2])
+# par(new=T)
+# plot(st_geometry(CBG_ny$geometry[i_range3]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[3])
+# legend("topleft", c("[0,40]","[40,120]","[120,400]"),fill=colors)
 
-library(viridis)
-colors <- rainbow(3)
-x11()
-plot(st_geometry(CBG_ny$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ")
-par(new=T)
-plot(st_geometry(CBG_ny$geometry[i_range1]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[1])
-par(new=T)
-plot(st_geometry(CBG_ny$geometry[i_range2]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[2])
-par(new=T)
-plot(st_geometry(CBG_ny$geometry[i_range3]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[3])
-legend("topleft", c("[0,40]","[40,120]","[120,400]"),fill=colors)
+
+hist(data_spatial2$New_York_County.median_dwell,breaks=16, col="grey", main='Histogram of median dwell', prob = TRUE) #asymmetric data
+
 
 #------------------------------------------------------------------------------------------------------------------------------------
 # ALL STATE of NY
-# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Complete_dataset.RData")
+ load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Complete_dataset.RData")
 # 
 # i_range1<-which(complete_dataset$median_dwell<50 )
 # i_range2<-which(complete_dataset$median_dwell<100 & complete_dataset$median_dwell>=50 )
@@ -114,6 +131,14 @@ legend("topleft", c("[0,40]","[40,120]","[120,400]"),fill=colors)
 #   
 # legend("bottomleft",c("[0,50]","[50,100]","[100,150]","[150,200]","[200,300]","[300,450]","[450,800]"),fill =colors)
 # title("Median_Dwell of the State of NY")
+
+
+median_dwell2<-complete_dataset$median_dwell
+ggplot() + 
+  geom_sf(data = complete_dataset$geometry, aes(fill=median_dwell2))+scale_fill_gradient(low="lightblue", high="red")
+
+rm(median_dwell2)
+rm(complete_dataset)
 
 #------------------------------------------------------------
 # Spatial Correlation
