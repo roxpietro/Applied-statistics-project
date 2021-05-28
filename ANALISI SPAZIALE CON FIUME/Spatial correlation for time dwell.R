@@ -41,7 +41,6 @@ rm(census_metadata)
 
 #------------------------------------------------------------
 # Save centroid coordinates of each CBG
-CBG_ny$geometry<-st_geometry(CBG_ny$geometry)
 centroids <- st_centroid(CBG_ny$geometry, of_largest_polygon = FALSE)
 
 x11()
@@ -51,8 +50,17 @@ plot(st_geometry(CBG_RIVER$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.8
 par(new=T)
 plot(centroids, xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", pch='.')
 
-spatial_data <- as(CBG_ny, "Spatial")
+coord <- as.numeric(unlist(centroids))
+coord.x <- coord[seq(1,length(coord),by=2)]
+coord.y <- coord[seq(2,length(coord),by=2)]
 
+data_spatial <-data.frame(CBG_ny, New_York_County$median_dwell, coord.x, coord.y)
+
+coordinates(data_spatial) <- c('coord.x','coord.y')
+x11()
+bubble(data_spatial, 'New_York_County.median_dwell', do.log=TRUE,key.space='bottom')
+plot(st_geometry(data_spatial["median_dwell"]))
+#spplot(data_spatial)
 #------------------------------------------------------------
 # Spatial Correlation
 
