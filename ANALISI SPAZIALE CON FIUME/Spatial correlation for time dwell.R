@@ -4,6 +4,8 @@
 
 library(geosphere)
 library(sf)
+library(lattice)           ## Data management
+
 
 # fra
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
@@ -55,29 +57,88 @@ coord.x <- coord[seq(1,length(coord),by=2)]
 coord.y <- coord[seq(2,length(coord),by=2)]
 
 data_spatial <-data.frame(CBG_ny, New_York_County$median_dwell, coord.x, coord.y)
+data_spatial2 <-data.frame(New_York_County$median_dwell, coord.x, coord.y)
 
-coordinates(data_spatial) <- c('coord.x','coord.y')
+coordinates(data_spatial2) <- c('coord.x','coord.y')
 x11()
 bubble(data_spatial, 'New_York_County.median_dwell', do.log=TRUE,key.space='bottom')
-plot(st_geometry(data_spatial["median_dwell"]))
-#spplot(data_spatial)
+#plot(st_geometry(data_spatial["median_dwell"]))
+
+i_range1<-which(data_spatial$New_York_County.median_dwell<40 )
+i_range2<-which(data_spatial$New_York_County.median_dwell<120 & data_spatial$New_York_County.median_dwell>=40 )
+i_range3<-which(data_spatial$New_York_County.median_dwell>=120 )
+
+
+
+library(viridis)
+colors <- rainbow(3)
+x11()
+plot(st_geometry(CBG_ny$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ")
+par(new=T)
+plot(st_geometry(CBG_ny$geometry[i_range1]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[1])
+par(new=T)
+plot(st_geometry(CBG_ny$geometry[i_range2]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[2])
+par(new=T)
+plot(st_geometry(CBG_ny$geometry[i_range3]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ", col=colors[3])
+legend("topleft", c("[0,40]","[40,120]","[120,400]"),fill=colors)
+
+#------------------------------------------------------------------------------------------------------------------------------------
+# ALL STATE of NY
+# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Complete_dataset.RData")
+# 
+# i_range1<-which(complete_dataset$median_dwell<50 )
+# i_range2<-which(complete_dataset$median_dwell<100 & complete_dataset$median_dwell>=50 )
+# i_range3<-which(complete_dataset$median_dwell<150 & complete_dataset$median_dwell>=100 )
+# i_range4<-which(complete_dataset$median_dwell<200 & complete_dataset$median_dwell>=150 )
+# i_range5<-which(complete_dataset$median_dwell<300 & complete_dataset$median_dwell>=200 )
+# i_range7<-which(complete_dataset$median_dwell<450 & complete_dataset$median_dwell>=300 )
+# i_range8<-which(complete_dataset$median_dwell<800 & complete_dataset$median_dwell>=450 )
+# 
+# 
+# x11()
+# colors <- rainbow(8)
+# plot(st_geometry(complete_dataset$geometry[i_range1]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(1))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range2]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(2))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range3]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(3))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range4]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(4))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range5]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(5))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range7]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(7))
+#   par(new=T)
+# plot(st_geometry(complete_dataset$geometry[i_range8]),xlim = c(-80,-71), ylim = c(40,45), xlab = " ", ylab = " ",col = rainbow(8))
+#   par(new=T)
+#   
+# legend("bottomleft",c("[0,50]","[50,100]","[100,150]","[150,200]","[200,300]","[300,450]","[450,800]"),fill =colors)
+# title("Median_Dwell of the State of NY")
+
 #------------------------------------------------------------
 # Spatial Correlation
+library(automap)
 
-bubble(data,'median_dwell',do.log=TRUE,key.space='bottom')
-
-
-svgm <- variogram(New_York_County$median_dwell ~ 1, CBG_ny, locations = centroids) #response variable ~ 1 #stationary dataset
+svgm <- variogram(data_spatial2$New_York_County.median_dwell ~ 1, data_spatial2) #response variable ~ 1 #stationary dataset
 # Zs = ms + delta_s
 # sum_l a_l*f_l(s) + delta_s amd with 1 we say "take only f_0(s)"
 plot(svgm, main = 'Sample Variogram',pch=19)
 
-plot(variogram(New_York_County$median_dwell ~ 1, CBG_ny,alpha = c(0, 45, 90, 135),locations = centroids),pch=19)
+plot(variogram(data_spatial2$New_York_County.median_dwell ~ 1, data_spatial2,alpha = c(0, 45, 90, 135)),pch=19)
 
 # Fit
-v <- variogram(New_York_County$median_dwell ~ 1, CBG_ny,locations = centroids)
+v <- variogram(data_spatial2$New_York_County.median_dwell ~ 1, data_spatial2,alpha=45 )
 plot(v,pch=19)
 
-v.fit<-fit.variogram(v, vgm(1, "Sph", 800, 1))
+v.fit = autofitVariogram(data_spatial2$New_York_County.median_dwell~1,
+                             data_spatial2,
+                             model = c("Ste"),
+                         kappa = c(0.05, seq(0.2, 2, 0.1), 5, 10),
+                         fix.values = c(NA, NA, NA),
+                         start_vals = c(NA,NA,NA),
+                         verbose = T)
 
-plot(v, v.fit, pch = 19)
+# da modificare per trovare il modello migliore
+
+
+plot(v, v.fit$var_model, pch = 19)
