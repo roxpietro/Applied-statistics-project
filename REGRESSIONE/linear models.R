@@ -6,10 +6,10 @@ library(car)
 # Loading 
 
 # fra
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
+#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
 
 # terri
-#load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
 
 New_York_County<-New_York_County[-92,]
 attach(New_York_County)
@@ -26,8 +26,8 @@ pairs(LM_1) #(male)
 ################## PRIMO MODELLO CON 2 FEATURES ################################
 
 # # facciamo un linear model solo con le prime due variabili (risultati molto bassi)
-# mod=lm(formula = median_dwell ~ raw_stop_counts + raw_device_counts)
-# summary(mod)
+mod=lm(formula = median_dwell ~ raw_stop_counts + raw_device_counts)
+summary(mod)
 # 
 # # Dobbiamo trovare una trasformazione che renda il modello pi? lineare
 # 
@@ -35,92 +35,93 @@ pairs(LM_1) #(male)
 # #1. decidiamo di fare il boxcox del modello (univariate)
 # #-------------------------------------------------------------------------------
 # 
-# b=boxCox(mod)
-# best_lambda_ind=which.max(b$y)
-# lambda=b$x[best_lambda_ind]
-# 
-# box_cox <- function(x,lambda)
-# {
-#   if(lambda!=0)
-#     return((x^lambda-1)/lambda)
-#   return(log(x))
-# }
-# 
-# new_raw_stop_counts = box_cox(raw_stop_counts,lambda)
-# new_raw_device_counts = box_cox(raw_device_counts,lambda)
-# new_median_dwell = box_cox(median_dwell,lambda)
-# 
-# mod_boxcox=lm(formula = new_median_dwell ~ new_raw_stop_counts + new_raw_device_counts)
-# summary(mod_boxcox) #0.38
-# 
+b=boxCox(mod)
+best_lambda_ind=which.max(b$y)
+lambda=b$x[best_lambda_ind]
+
+box_cox <- function(x,lambda)
+{
+  if(lambda!=0)
+    return((x^lambda-1)/lambda)
+  return(log(x))
+}
+
+new_raw_stop_counts = box_cox(raw_stop_counts,lambda)
+new_raw_device_counts = box_cox(raw_device_counts,lambda)
+new_median_dwell = box_cox(median_dwell,lambda)
+
+mod_boxcox=lm(formula = new_median_dwell ~ new_raw_stop_counts + new_raw_device_counts)
+summary(mod_boxcox) #0.38
+
 # #-------------------------------------------------------------------------------
 # #2. Proviamo a vedere se cambia qualcosa con il Powertransformation di ogni variabile (univariate)
 # #--------------------------------------------------------------------------------
-# lambda.raw_stop <- powerTransform(raw_stop_counts)
-# lambda.raw_device <- powerTransform(raw_device_counts)
-# lambda.median <- powerTransform(median_dwell)
-# 
-# bc.raw_stop <- bcPower(raw_stop_counts, lambda.raw_stop$lambda)
-# bc.raw_device <- bcPower(raw_device_counts, lambda.raw_device$lambda)
-# bc.median <- bcPower(median_dwell, lambda.median$lambda)
-# 
-# mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
-# summary(mod_power) #0.475
-# 
-# mod_power=lm(formula = median_dwell ~ bc.raw_stop + bc.raw_device)
-# summary(mod_power) #0.496
-# 
-# mod_power=lm(formula = bc.median ~ raw_stop_counts + raw_device_counts)
-# summary(mod_power) #0.03
-# 
-# mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
-# summary(mod_power) #0.478
-# 
+lambda.raw_stop <- powerTransform(raw_stop_counts)
+lambda.raw_device <- powerTransform(raw_device_counts)
+lambda.median <- powerTransform(median_dwell)
+
+bc.raw_stop <- bcPower(raw_stop_counts, lambda.raw_stop$lambda)
+bc.raw_device <- bcPower(raw_device_counts, lambda.raw_device$lambda)
+bc.median <- bcPower(median_dwell, lambda.median$lambda)
+
+mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
+summary(mod_power) #0.475
+
+mod_power=lm(formula = median_dwell ~ bc.raw_stop + bc.raw_device)
+summary(mod_power) #0.496
+
+mod_power=lm(formula = bc.median ~ raw_stop_counts + raw_device_counts)
+summary(mod_power) #0.03
+
+mod_power=lm(formula = bc.median ~ bc.raw_stop + bc.raw_device)
+summary(mod_power) #0.478
+
 # #----------------------------------------------------------------------------
 # #3. Multivariate case
 # #----------------------------------------------------------------------------
-# lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,median_dwell))
-# lambda_multivariate
-# 
-# BC.stop <- bcPower(raw_stop_counts, 0)
-# BC.device <- bcPower(raw_device_counts, 0)
-# BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[3])
-# 
-# mod_multivariate=lm(formula = BC.median ~ BC.stop + BC.device)
-# summary(mod_multivariate) #0.692
-# 
+lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,median_dwell))
+lambda_multivariate
+
+BC.stop <- bcPower(raw_stop_counts, 0)
+BC.device <- bcPower(raw_device_counts, 0)
+BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[3])
+
+mod_multivariate=lm(formula = BC.median ~ BC.stop + BC.device)
+summary(mod_multivariate) #0.692
+
 # ######################################### SECONDO MODELLO: AGGIUNGO FEATURES ##########################################
 # 
 # #4. Provo con questo metodo ad aggiungere features
 # 
-# lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,distance_from_home,distance_from_primary_daytime_location,median_dwell))
-# lambda_multivariate
-# 
-# BC.stop <- bcPower(raw_stop_counts, 0)
-# BC.device <- bcPower(raw_device_counts, 0)
-# BC.home <- bcPower(distance_from_home, lambda_multivariate$lambda[3])
-# BC.primary <- bcPower(distance_from_primary_daytime_location, lambda_multivariate$lambda[4])
-# BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[5])
-# 
-# mod_multivariate_complete=lm(formula = BC.median ~ BC.stop + BC.device + BC.primary + BC.home)
-# summary(mod_multivariate_complete) #0.6932
-# 
-# vif(mod_multivariate_complete) # c'è collinearità
-# 
-# LM_2 <- data.frame(BC.stop,BC.device ,BC.home,BC.primary,median_dwell )
-# pairs(LM_2)
-# 
-# par(mfrow=c(2,2))
-# plot(mod_multivariate_complete)
-# 
-# shapiro.test(residuals(mod_multivariate_complete))
+lambda_multivariate <- powerTransform(cbind(raw_stop_counts, raw_device_counts,distance_from_home,distance_from_primary_daytime_location,median_dwell))
+lambda_multivariate
+
+BC.stop <- bcPower(raw_stop_counts, 0)
+BC.device <- bcPower(raw_device_counts, 0)
+BC.home <- bcPower(distance_from_home, lambda_multivariate$lambda[3])
+BC.primary <- bcPower(distance_from_primary_daytime_location, lambda_multivariate$lambda[4])
+BC.median <- bcPower(median_dwell, lambda_multivariate$lambda[5])
+
+mod_multivariate_complete=lm(formula = BC.median ~ BC.stop + BC.device + BC.primary + BC.home)
+summary(mod_multivariate_complete) #0.6932
+
+vif(mod_multivariate_complete) # c'? collinearit?
+
+LM_2 <- data.frame(BC.stop,BC.device ,BC.home,BC.primary,median_dwell )
+x11()
+pairs(LM_2)
+
+par(mfrow=c(2,2))
+plot(mod_multivariate_complete)
+
+shapiro.test(residuals(mod_multivariate_complete))
 
 
 #-------------------------------------------------------------------
 # FEATURE SELECTION
 #--------------------------------------------------------------------
 
-
+# altro script ...
 
 #-------------------------------------------------------------------------
 # proviamo a vedere se riusciamo a predirre nuove median_dwell con CV
