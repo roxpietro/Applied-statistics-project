@@ -100,7 +100,7 @@ coord_riv.x_long <- coord_river[seq(1,length(coord_river),by=2)]
 coord_riv.y_lat <- coord_river[seq(2,length(coord_river),by=2)]
 
 coord<-SpatialPoints(cbind(coord_riv.x_long,coord_riv.y_lat),proj4string=CRS("+proj=longlat"))
-coord.UTM.riv <- spTransform(coord, CRS("+init=epsg:32610"))
+coord.UTM.riv <- spTransform(coord, CRS("+proj=utm +zone=18 +datum=WGS84"))
 
 coord_riv.x <- coord.UTM.riv@coords[,1]
 coord_riv.y <- coord.UTM.riv@coords[,2]
@@ -117,6 +117,10 @@ attach(New_York_County)
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
+# histogram of median_dwell variable
+hist(median_dwell, breaks=16, col="grey", main='Histogram of median dwell', prob = TRUE, xlab = 'median dwell') #asymmetric data
+# highly skewed, transform to the log
+hist(log(median_dwell), breaks=16, col="grey", main='Histogram of log(median_dwell)', prob = TRUE, xlab = 'log(median_dwell)')
 
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="black") +
@@ -125,6 +129,8 @@ ggplot() +
 
 x11()
 spplot(data_spatial,'median_dwell')
+
+xyplot(log(median_dwell) ~ sqrt(distance), as.data.frame(data_spatial))
 
 # vediamo una netta differenza tra nord e sud -> dummy variable tra nord e sud
 
@@ -165,7 +171,8 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  
  # non converge, dato che c'è poca variabilità tra i dati
  v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
- v.fit <- fit.variogram(v, vgm(4000, "Exp", 500, 3000))
+ plot(v)
+ v.fit <- fit.variogram(v, vgm(0.4, "Exp", 3000, 0.2))
  x11()
  plot(v, v.fit, pch = 3)
  v.fit
@@ -173,6 +180,8 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  
 #--------------------------------------------
  # compare the two variograms
+ v.f.est<-function(x,C0, ...){C0-cov.spatial(x, ...)}
+ 
  plot(v$dist,v$gamma,xlab='distance',ylab='semivariance',pch=19,col='red', ylim=c(0.2,0.39))
  curve(v.f.est(x, C0=v.fit[2,2]+v.fit[1,2], cov.pars=rbind(c(v.fit[2,2], v.fit[2,3]),c(v.fit[1,2], v.fit[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 6000,
        xlab = "distance", ylab = expression(gamma(h)),
@@ -235,11 +244,12 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  # spatial prediction
  
  g.tr <- gstat(formula = log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial, model = v.fit)
+ # inserire le coordinate (longitudine, latitudine) che vogliamo
  x=-74.3
  y=40.5
  
  coord<-SpatialPoints(cbind(x,y),proj4string=CRS("+proj=longlat"))
- coord.UTM <- spTransform(coord, CRS("+init=epsg:32610"))
+ coord.UTM <- spTransform(coord, CRS("+proj=utm +zone=18 +datum=WGS84"))
  
  stop.new=data.frame(coord.x=coord.UTM@coords[,1], y=coord.UTM@coords[,2]) # UTM coordinates
  s0.dist <- min(rowSums(scale(t(rbind(coord.UTM.NY@coords[,1],coord.UTM.NY@coords[,1])),stop.new)^2))
