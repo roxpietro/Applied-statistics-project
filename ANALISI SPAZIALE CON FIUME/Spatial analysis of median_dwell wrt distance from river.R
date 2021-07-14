@@ -10,7 +10,7 @@ library(geoR)         ## Geostatistics
 library(gstat)        ## Geostatistics
 library(ggplot2)
 library(raster)
-
+library(rgdal)
 
 # fra
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
@@ -173,7 +173,7 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial)
  plot(v)
  
- # non converge, dato che c'è poca variabilità tra i dati
+ # non converge, dato che c'? poca variabilit? tra i dati
  v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
  plot(v)
  v.fit <- fit.variogram(v, vgm(0.4, "Exp", 3000, 0.2))
