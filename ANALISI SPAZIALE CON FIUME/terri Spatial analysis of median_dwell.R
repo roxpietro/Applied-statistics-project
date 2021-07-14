@@ -131,7 +131,8 @@ hist(log(median_dwell), breaks=16, col="grey", main='Histogram of log(median_dwe
 
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="black") +
-  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")
+  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")+
+  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="red")
 
 
 x11()
