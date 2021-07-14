@@ -326,8 +326,8 @@ fdakma_example <- kma(
   x=x, 
   y0=t(Xsp0),
  # y1=t(Xsp1), 
-  n.clust = 2, 
-  warping.method = 'affine', # trasformation of an axis in order to do align
+  n.clust = 3, 
+  warping.method = c('affine', 'dilatation'), # trasformation of an axis in order to do align
   similarity.method = 'd0.pearson',  # similarity computed as the cosine
   # between the first derivatives 
   # (correlation)
@@ -339,10 +339,12 @@ kma.show.results(fdakma_example)
 
 
 kma.compare_example2 <- kma.compare (
-  x=x, y0=t(Xsp0), y1=t(Xsp1), n.clust = 1:3, 
-  warping.method = c('affine', 'dilatation','shift'), 
-  similarity.method = 'd1.pearson',
+  x=x, y0=t(Xsp0), 
+  #y1=t(Xsp1), 
+  n.clust = 2:4, 
+  warping.method = c('affine', 'dilatation'), 
+  similarity.method = 'd0.pearson',
   center.method = 'k-means', 
-  seeds = c(1,21,30),
+  #seeds = c(1,21,30),
   plot.graph=1)
 
