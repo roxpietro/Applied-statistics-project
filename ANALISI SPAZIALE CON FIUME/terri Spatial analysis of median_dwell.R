@@ -129,6 +129,10 @@ distance<-distm(cbind(coord.x_long, coord.y_lat), cbind(coord_cTS.x_long, coord_
 
 New_York_County<-New_York_County[-index_river,]
 attach(New_York_County)
+#f(s_i) = distance from home
+distance <- distance_from_home
+#f(s_i) = distance from primary location
+distance <- distance_from_primary_daytime_location
 
 
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
@@ -155,7 +159,8 @@ ggplot() +
 x11()
 spplot(data_spatial,'median_dwell')
 #serve per vedere se si nota correlazione, dipendenza, tra funzione della posizione scelta e Z(median_dwell)
-xyplot(bc.median_dwell ~ sqrt(distance), as.data.frame(data_spatial))
+x11()
+xyplot(log(median_dwell) ~ sqrt(distance), as.data.frame(data_spatial))
 
 # vediamo una netta differenza tra nord e sud -> dummy variable tra nord e sud
 
