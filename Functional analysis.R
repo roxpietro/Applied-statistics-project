@@ -8,9 +8,11 @@ library(fda)
 # fra
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 #--------------------------------------------------------------------
 # Build dataset 
 
+New_York_County=New_York_County[order(New_York_County$area),]
 attach(New_York_County)
 
 stops<-matrix(nrow = 1168, ncol=30)
@@ -73,13 +75,13 @@ text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 
 
 # outliers
-out=c(228,871,267)
+out=c(566,106,1157)
 cbg_out=New_York_County[out,1]
 layout(1)
 matplot(stops,type='l')
-lines(stops[,228],lwd=4, col=2) 
-lines(stops[,871],lwd=4, col=1) 
-lines(stops[,267],lwd=4, col=3) 
+lines(stops[,566],lwd=4, col=2) 
+lines(stops[,106],lwd=4, col=1) 
+lines(stops[,1157],lwd=4, col=3) 
 
 # togliamo questi outliers
 stops<-stops[,-out]
@@ -89,6 +91,12 @@ matplot(stops,type='l')
 #...non cambia molto, significa che dobbiamo capire la discriminante
 
 New_York_County_no_river<-New_York_County_no_river[-which(New_York_County_no_river$area %in% cbg_out),]
+CBG_ny_no_river<-CBG_ny_no_river[-which(CBG_ny_no_river$CensusBlockGroup %in% cbg_out),]
+
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
+
+
 attach(New_York_County_no_river)
 
 stops<-matrix(nrow = 1090, ncol=30)
@@ -103,7 +111,7 @@ stops<-t(stops)
 matplot(stops,type='l')
 
 
-nbasis <- 29
+nbasis <- 22
 basis <- create.fourier.basis(rangeval=c(1,30),nbasis=nbasis) # creates a fourier basis
 
 time=1:30
@@ -139,3 +147,49 @@ x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
 text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
+
+centroids_NY <- st_centroid(CBG_ny_no_river$geometry, of_largest_polygon = FALSE)
+coord_NY <- as.numeric(unlist(centroids_NY))
+coord.x_long <- coord_NY[seq(1,length(coord_NY),by=2)]
+coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
+
+x11()
+plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
+outliers<-c(346,358)
+points(coord.x_long[outliers],coord.y_lat[outliers], cex=2, col='red')
+
+#---------------------------------------------------------------------
+# proviamo a fare clustering, magari troviamo i due comportamenti che vediamo
+# ALIGNMENT
+
+x<-t(matrix((time)))
+Xsp <- smooth.basis(argvals=time, y=stops, fdParobj=basis) # easier because it includes also penalization (see later)
+Xsp0 <- eval.fd(time, Xsp$fd) #  the curve smoothing the data
+Xsp1 <- eval.fd(time, Xsp$fd, Lfd=1) # first derivative
+
+library(fdakma)
+
+fdakma_example <- kma(
+  x=x, 
+  y0=t(Xsp0),
+  y1=t(Xsp1), 
+  n.clust = 3, 
+  warping.method = 'affine', # trasformation of an axis in order to do align
+  similarity.method = 'd0.pearson',  # similarity computed as the cosine
+  # between the first derivatives 
+  # (correlation)
+  center.method = 'k-means'
+  #seeds = c(1,21) # you can give a little help to the algorithm...
+)
+
+kma.show.results(fdakma_example)
+
+
+kma.compare_example2 <- kma.compare (
+  x=x, y0=t(Xsp0), y1=t(Xsp1), n.clust = 1:3, 
+  warping.method = c('affine', 'dilatation','shift'), 
+  similarity.method = 'd1.pearson',
+  center.method = 'k-means', 
+  seeds = c(1,21,30),
+  plot.graph=1)
+

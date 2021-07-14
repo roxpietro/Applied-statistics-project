@@ -66,6 +66,7 @@ for (i in 1:dim(CBG_ny)[1]) {
   }
 }
 CBG_ny_no_river<-CBG_ny[-index_river,]
+#save (CBG_ny_no_river, file="CBG_NY_no_river.RData")
 
 
 #-----------------------------------------------------------
@@ -84,6 +85,9 @@ coord_NY <- as.numeric(unlist(centroids_NY))
 coord.x_long <- coord_NY[seq(1,length(coord_NY),by=2)]
 coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
 
+x11()
+plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
+text(coord.x_long,coord.y_lat, labels=CBG_ny_no_river$area, cex=1)
 
 
 coord<-SpatialPoints(cbind(coord.x_long,coord.y_lat),proj4string=CRS("+proj=longlat"))
