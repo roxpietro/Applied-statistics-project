@@ -486,9 +486,9 @@ fit <- aov2.int <- aov(dev ~ days + dev_county + days:dev_county)
 summary(fit)
 #=> remove the interaction term and estimate the model without interaction
 fit.aov2.ad <- aov(dev ~ days + dev_county)
-summary.aov(fit.aov2.ad)
+summary.aov(fit.aov2.ad) #pvalue days 0.647
 
-fit <- aov(dev ~ dev_county)
+fit <- aov(dev ~ dev_county) #pvalue dev_county <2e-16 ***
 summary(fit)
 
 

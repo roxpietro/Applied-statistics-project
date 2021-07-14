@@ -13,12 +13,13 @@ library(raster)
 library(rgdal)
 
 # fra
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
+#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
 # terri
-#load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
-#load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 
 # order patterns_ny and census_block_ny by CBG of New York County
 New_York_County=New_York_County[order(New_York_County$area),]
@@ -85,7 +86,7 @@ coord_NY <- as.numeric(unlist(centroids_NY))
 coord.x_long <- coord_NY[seq(1,length(coord_NY),by=2)]
 coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
 
-x11()
+x11() #controlla se plotta i centroidi
 plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
 text(coord.x_long,coord.y_lat, labels=CBG_ny_no_river$area, cex=1)
 
@@ -109,15 +110,24 @@ coord.UTM.riv <- spTransform(coord, CRS("+proj=utm +zone=18 +datum=WGS84"))
 coord_riv.x <- coord.UTM.riv@coords[,1]
 coord_riv.y <- coord.UTM.riv@coords[,2]
 
-dist=distm(cbind(coord.x_long, coord.y_lat), cbind(coord_riv.x_long, coord_riv.y_lat), fun = distGeo)
-distance<-c()
-for (i in 1:1092)
-  distance[i]<-dist[i,which.min(dist[i,])]
 
-New_York_County<-New_York_County[-index_river,]
+# dist=distm(cbind(coord.x_long, coord.y_lat), cbind(coord_riv.x_long, coord_riv.y_lat), fun = distGeo)
+distance<-c()
+#SCELTA REGRESSORE:f(s_i)
+#f(s_i) = distanza dal fiume
+# for (i in 1:1092)
+#   distance[i]<-dist[i,which.min(dist[i,])]
+# 
+# New_York_County<-New_York_County[-index_river,]
 attach(New_York_County)
 
-
+#f(s_i) = distanza da ipotetico centro di times square
+k <- which(CBG_ny_no_river$TractCode == '011300')
+centroid_TimesSquare <- st_centroid(CBG_ny_no_river$geometry[k,], of_largest_polygon = FALSE)
+coord_cTS <- as.numeric(unlist(centroid_TimesSquare))
+coord_cTS.x_long <- coord_cTS[1]
+coord_cTS.y_lat <- coord_cTS[2]
+distance<-distm(cbind(coord.x_long, coord.y_lat), cbind(coord_cTS.x_long, coord_cTS.y_lat), fun = distGeo)
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
@@ -159,7 +169,7 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
 
  
 #@-------------------------------
- # stationary variogram
+ # stationary variogram v1
  
  v.1 <- variogram(log(median_dwell) ~ 1, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
  fit1=fit.variogram(v.1, vgm(0.4, model='Exp', 5000, nugget=0.2))
@@ -168,7 +178,7 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  plot(v.1, fit1, pch = 3)
 
 #--------------------------------
- # non stationary variogram
+ # non stationary variogram v
  
  v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial)
  plot(v)
