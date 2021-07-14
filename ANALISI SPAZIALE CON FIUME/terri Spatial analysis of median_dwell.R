@@ -112,10 +112,21 @@ coord.UTM.riv <- spTransform(coord, CRS("+proj=utm +zone=18 +datum=WGS84"))
 coord_riv.x <- coord.UTM.riv@coords[,1]
 coord_riv.y <- coord.UTM.riv@coords[,2]
 
+k <- which(CBG_ny_no_river$TractCode == '011300')
+centroid_TimesSquare <- st_centroid(CBG_ny_no_river$geometry[k,], of_largest_polygon = FALSE)
+coord_cTS <- as.numeric(unlist(centroid_TimesSquare))
+coord_cTS.x_long <- coord_cTS[1]
+coord_cTS.y_lat <- coord_cTS[2]
+
 dist=distm(cbind(coord.x_long, coord.y_lat), cbind(coord_riv.x_long, coord_riv.y_lat), fun = distGeo)
+#SCELTA REGRESSORE:f(s_i)
+#f(s_i) = distanza dal fiume
 distance<-c()
 for (i in 1:1092)
   distance[i]<-dist[i,which.min(dist[i,])]
+
+#f(s_i) = distanza da ipotetico centro di times square
+distance<-distm(cbind(coord.x_long, coord.y_lat), cbind(coord_cTS.x_long, coord_cTS.y_lat), fun = distGeo)
 
 New_York_County<-New_York_County[-index_river,]
 attach(New_York_County)
@@ -124,21 +135,28 @@ attach(New_York_County)
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
+#box cox transformation --------------------------------------------------------
+library(car)
+lambda <- powerTransform(median_dwell)
+bc.median_dwell <- bcPower(median_dwell, lambda$lambda)
+
 # histogram of median_dwell variable
 hist(median_dwell, breaks=16, col="grey", main='Histogram of median dwell', prob = TRUE, xlab = 'median dwell') #asymmetric data
 # highly skewed, transform to the log
 hist(log(median_dwell), breaks=16, col="grey", main='Histogram of log(median_dwell)', prob = TRUE, xlab = 'log(median_dwell)')
 
+hist(bc.median_dwell, breaks=16, col="grey", main='Histogram of log(median_dwell)', prob = TRUE, xlab = 'log(median_dwell)')
+
+x11()
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="black") +
-  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")+
-  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="red")
+  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")
 
 
 x11()
 spplot(data_spatial,'median_dwell')
-
-xyplot(log(median_dwell) ~ sqrt(distance), as.data.frame(data_spatial))
+#serve per vedere se si nota correlazione, dipendenza, tra funzione della posizione scelta e Z(median_dwell)
+xyplot(bc.median_dwell ~ sqrt(distance), as.data.frame(data_spatial))
 
 # vediamo una netta differenza tra nord e sud -> dummy variable tra nord e sud
 
