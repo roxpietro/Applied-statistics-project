@@ -13,13 +13,13 @@ library(raster)
 library(rgdal)
 
 # fra
-#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
-#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
-#load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
 # terri
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 
 # order patterns_ny and census_block_ny by CBG of New York County
 New_York_County=New_York_County[order(New_York_County$area),]
@@ -118,7 +118,7 @@ distance<-c()
 # for (i in 1:1092)
 #   distance[i]<-dist[i,which.min(dist[i,])]
 # 
-# New_York_County<-New_York_County[-index_river,]
+ New_York_County<-New_York_County[-index_river,]
 attach(New_York_County)
 
 #f(s_i) = distanza da ipotetico centro di times square
@@ -128,7 +128,6 @@ coord_cTS <- as.numeric(unlist(centroid_TimesSquare))
 coord_cTS.x_long <- coord_cTS[1]
 coord_cTS.y_lat <- coord_cTS[2]
 distance<-distm(cbind(coord.x_long, coord.y_lat), cbind(coord_cTS.x_long, coord_cTS.y_lat), fun = distGeo)
-
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
@@ -138,9 +137,9 @@ hist(median_dwell, breaks=16, col="grey", main='Histogram of median dwell', prob
 hist(log(median_dwell), breaks=16, col="grey", main='Histogram of log(median_dwell)', prob = TRUE, xlab = 'log(median_dwell)')
 
 ggplot() + 
-  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="black") +
+  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="darkred") +
   geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")+
-  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="red")
+  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="blue")
 
 x11()
 spplot(data_spatial,'median_dwell')
@@ -185,7 +184,7 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  plot(v)
  
  # non converge, dato che c'? poca variabilit? tra i dati
- v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
+ v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data,boundaries = c(0,200,seq(400,6000,450)))
  plot(v)
  v.fit <- fit.variogram(v, vgm(0.4, "Exp", 3000, 0.2))
  x11()

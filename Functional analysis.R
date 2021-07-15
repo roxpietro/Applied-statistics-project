@@ -169,7 +169,7 @@ points(coord.x_long[outliers],coord.y_lat[outliers], cex=2, col='red')
 New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
 attach(New_York_County_no_river)
 
-stops<-matrix(ncol=30, nrow = 1092-964)
+stops<-matrix(ncol=30, nrow = 124)
 k=1
 index<-c()
 for (i in 1:dim(New_York_County_no_river)[1]) {
@@ -306,9 +306,107 @@ plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
 text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 
 
+#--------------------------------------------------------------------
+# proviamo a prendere quelli con stops<250
+
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+attach(New_York_County_no_river)
+
+stops<-matrix(ncol=30, nrow = 964)
+k=1
+index<-c()
+for (i in 1:dim(New_York_County_no_river)[1]) {
+  if (max(stops_by_day[[i]])<250) {
+    stops[k,]<-stops_by_day[[i]]
+    index[k]<-i
+    k=k+1
+  }
+}
+
+detach(New_York_County_no_river)
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
+
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill="black")+
+  geom_sf(data = CBG_ny_no_river$geometry[index], fill="red")
 
 
+stops<-t(stops)
+x11()
+par(mfrow=(c(2,2)))
+for(i in 1:4){
+  matplot(stops[(i*7-6):(i*7),],type='l')
+}
 
+x11()
+matplot(stops,type='l')
+
+
+#B-SPLINES
+# Set parameters
+nbasis <- 17
+m <- 3+1        # spline order 
+# spline degree  #DEGREE = ORDER - 1
+basis <- create.bspline.basis(rangeval=c(1,30), nbasis=nbasis, norder=m)
+
+
+time=1:30
+data_W.fd.1 <- Data2fd(y = stops,argvals = time,basisobj = basis) #SMOOTHING
+x11()
+plot.fd(data_W.fd.1)
+
+
+# FPCA
+
+arm=5 #numero armoniche
+plot.fd(data_W.fd.1)
+pca_W.1 <- pca.fd(data_W.fd.1,nharm=arm,centerfns=TRUE) #build a functional object before run it -> smoothing preprocessing
+
+# scree plot
+# pca.fd computes all the 365 eigenvalues, but only the first are non null
+plot(pca_W.1$values[1:5],xlab='j',ylab='Eigenvalues')
+plot(cumsum(pca_W.1$values)[1:5]/sum(pca_W.1$values),xlab='j',ylab='CPV',ylim=c(0.8,1))
+
+layout(cbind(1,2,3))
+plot(pca_W.1$harmonics[1,],col=1,ylab='FPC1')
+abline(h=0,lty=2)
+plot(pca_W.1$harmonics[2,],col=2,ylab='FPC2')
+plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
+
+par(mfrow=c(1,3))
+plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALSE)
+
+# scatter plot of the scores
+par(mfrow=c(1,2))
+plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
+
+plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
+     ylab="Scores FPC2")
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+x11()
+plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
+     ylab="Scores FPC2")
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
+
+
+#-------------------------------------------------------------
+#plot derivatives
+
+# Evaluate the basis on the grid of abscissa
+abscissa<-time
+basismat <- eval.basis(abscissa, basis) #
+dim(basismat)
+head(basismat)
+
+Xobs0<-stops
+
+Xsp <- smooth.basis(argvals=abscissa, y=Xobs0, fdParobj=basis) # easier because it includes also penalization (see later)
+Xsp0 <- eval.fd(abscissa, Xsp$fd) #  the curve smoothing the data
+Xsp1 <- eval.fd(abscissa, Xsp$fd, Lfd=1) # first derivative
+
+
+x11()
+matplot(Xsp1, type ="l")
 
 
 #---------------------------------------------------------------------
@@ -325,10 +423,10 @@ library(fdakma)
 fdakma_example <- kma(
   x=x, 
   y0=t(Xsp0),
- # y1=t(Xsp1), 
-  n.clust = 3, 
-  warping.method = c('affine', 'dilatation'), # trasformation of an axis in order to do align
-  similarity.method = 'd0.pearson',  # similarity computed as the cosine
+  y1=t(Xsp1), 
+  n.clust = 2, 
+  warping.method = 'affine', # trasformation of an axis in order to do align
+  similarity.method = 'd1.pearson',  # similarity computed as the cosine
   # between the first derivatives 
   # (correlation)
   center.method = 'k-means'
