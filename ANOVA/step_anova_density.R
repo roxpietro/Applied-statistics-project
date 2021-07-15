@@ -42,6 +42,7 @@ for (i in 1:15446){
 
 n <- dim(Patterns_NY)[1];
 g1 <- length(Patterns_NY$day_counts[[1]]);
+g1 <-7
 g2 <- 2;
 coldays <- brewer.pal(n = g1, name = 'Set2');
 colcountyNY <-brewer.pal(n = g1, name = 'Accent'); 
@@ -499,6 +500,9 @@ for (i in 2:15446){
   list_county=c(list_county, County[[i]] );
   list_county = unique(list_county);
 }
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
+n <- dim(New_York_County)[1];
+
 dev <- c();
 count <- rep(0, length(list_county)); #to check if tot cbg = ncounties * count
 tot <- 0; #conterà quanti cbg della county sta trovando
@@ -508,7 +512,7 @@ settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
 for (l in 1: length(list_county)){ #loop on counties
    for(i in 1: n){                 #loop on CBGs
      j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe census_blocks_ny
-     if(County[j] == list_county[l]){
+     if(County[j] == "New York County"){ #list_county[l]
       tot <- tot + 1;
       lun <- Patterns_NY$stops_by_day[[i]][seq(1,30,7)];
       mar <- Patterns_NY$stops_by_day[[i]][seq(2,30,7)];
@@ -600,4 +604,159 @@ for (l in 1: length(list_county)){ #loop on counties
 
 
 detach(Patterns_NY)
+detach(census_blocks_ny)
+### ------only manhattan--------------------------------------------------------
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
+n <- dim(New_York_County)[1];
+attach(New_York_County)
+attach(census_blocks_ny)
+
+dev <- c();
+tot <- 0; #conterà quanti cbg della county sta trovando
+settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
+
+for(i in 1: n){                 #loop on CBGs
+  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe census_blocks_ny
+  if(County[j] == "New York County"){ #list_county[l]
+    tot <- tot + 1;
+    lun <- stops_by_day[[i]][seq(1,30,7)];
+    mar <- stops_by_day[[i]][seq(2,30,7)];
+    mer <- stops_by_day[[i]][seq(3,30,7)];
+    gio <- stops_by_day[[i]][seq(4,30,7)];
+    ven <- stops_by_day[[i]][seq(5,30,7)];
+    sab <- stops_by_day[[i]][seq(6,30,7)];
+    dom <- stops_by_day[[i]][seq(7,30,7)];
+    dev[(tot*7 - 6): (tot*7)] <- c(mean(lun)/area_cbg[j], mean(mar)/area_cbg[j], 
+                                   mean(mer)/area_cbg[j], mean(gio)/area_cbg[j],
+                                   mean(ven)/area_cbg[j], mean(sab)/area_cbg[j],
+                                   mean(dom)/area_cbg[j]);
+  }
+}
+
+
+days <- rep(settimana, times = tot);
+#days <- factor(days);
+
+
+x11()
+#png(file = paste("Manhattan county", 'boxplot anova_days.png', sep = ""))
+boxplot( dev ~ days, main = paste('boxplot GROUPS = 7 week days of County', 'Manhattan'))
+dev.off()
+
+x11()
+# png(file =paste(Manhattan,'barplot anova_days.png', sep = ""))
+par(mfrow=c(1,2), las =2)
+barplot(rep(mean(dev),7), names.arg=levels(days),
+        col='grey85', main=paste('Model under H0', 'Manhattan')) # ylim=c(0,max(dev))
+barplot(tapply(dev, days, mean), names.arg=levels(days),
+        col=coldays,main=paste('Model under H1', 'Manhattan')) #, ylim=c(0,max(dev))
+
+dev.off()
+
+
+### verify the assumptions:
+# 1) normality (univariate) in each group (7 tests)
+Ps <- c(shapiro.test(dev[ days==settimana[1] ])$p,
+        shapiro.test(dev[ days==settimana[2] ])$p,
+        shapiro.test(dev[ days==settimana[3] ])$p,
+        shapiro.test(dev[ days==settimana[4] ])$p,
+        shapiro.test(dev[ days==settimana[5] ])$p,
+        shapiro.test(dev[ days==settimana[6] ])$p,
+        shapiro.test(dev[ days==settimana[7] ])$p);
+Ps #NON VA PERCHÈ ABBIAMO TROPPE STAT UNITS
+
+# 2) same covariance structure (= same sigma^2)
+Var <- c(var(dev[ days==settimana[1] ]),
+         var(dev[ days==settimana[2] ]),
+         var(dev[ days==settimana[3] ]),
+         var(dev[ days==settimana[4] ]),
+         var(dev[ days==settimana[5] ]),
+         var(dev[ days==settimana[6] ]),
+         var(dev[ days==settimana[7] ]));
+Var
+# x11()
+# plot(Var, ylim = c(0, max(Var)))
+# dev.off()
+# test of homogeneity of variances
+# H0: sigma.1 = sigma.2 = sigma.3 = sigma.4 = sigma.5 = sigma.6 
+# H1: there exist i,j s.t. sigma.i!=sigma.j
+
+# sink(paste(list_county[l], 'output.txt')) #reindirizza i risultati, che di solito appaiono nella console, verso il file output.txt
+bartlett.test(dev, days)
+fit <- aov(dev ~ days)
+summary(fit)
+
+# sink() #dovrebbe chiudere il file output e salvare
+
+tot <- 0;
+## weekend vs weekday ----------------------------------------------------------
+dev <- rep(0.0, times = n*2);
+group <- c('work day', 'weekend');
+days <- rep(group, times = n);
+
+for (i in 1:n){
+  j <- match(area[i],CensusBlockGroup);
+  tot = c(stops_by_day[[i]][seq(1,30,7)], stops_by_day[[i]][seq(2,30,7)],
+          stops_by_day[[i]][seq(3,30,7)], stops_by_day[[i]][seq(4,30,7)],
+          stops_by_day[[i]][seq(5,30,7)]);
+  dev[i] = mean(tot)/area_cbg[i];
+  tot <- c(stops_by_day[[i]][seq(6,30,7)], stops_by_day[[i]][seq(7,30,7)]);
+  dev[i+1] <- mean(tot)/area_cbg[j];
+  
+}
+plot(dev[seq(1,n,2)])
+plot(log(dev))
+abline
+points(dev[remove], col ='red')
+remove <- which(dev > 3*10^3)
+
+setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANOVA/Manhattan")
+ x11()
+#png(file = "boxplot_work.png")
+boxplot( log(dev) ~ days, main = "weekend vs work days")
+dev.off()
+
+#qua infatti le medie confrontando le densità sembrano differenti
+#ma pvalue alto
+x11()
+#png(file = "barplot_work.png")
+par(mfrow=c(1,2), las = 2)
+barplot(rep(mean(dev),2), names.arg=levels(days),
+        las=2, col='grey85', main='Model under H0') # ylim=c(0,max(dev))
+barplot(tapply(dev, days, mean), names.arg=levels(days),
+        las=2, col=c(coldays[4], coldays[6]),main='Model under H1') #, ylim=c(0,max(dev))
+
+dev.off()
+
+#plot fino ai picchi
+x11()
+par(mfrow=c(1,2))
+barplot(rep(mean(dev),7), names.arg=levels(days),ylim=c(0,max(dev)),
+        las=2, col='grey85', main='Model under H0') 
+barplot(tapply(dev, days, mean), names.arg=levels(days),ylim=c(0,max(dev)),
+        las=2, col=c(coldays[4], coldays[6]), main='Model under H1')
+
+dev.off()
+
+Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
+        shapiro.test(dev[ days==group[2] ])$p)
+Ps        
+#- gaussianity ->8.616562e-59 7.860198e-54 no
+
+# 2) same covariance structure (= same sigma^2)
+Var <- c(var(dev[ days==group[1] ]),
+         var(dev[ days==group[2] ]));
+Var #12021732  2350414
+x11()
+plot(Var, ylim = c(0, max(Var)))         
+# test of homogeneity of variances
+# H0: sigma.1 = sigma.2 = sigma.3 = sigma.4 = sigma.5 = sigma.6 
+# H1: there exist i,j s.t. sigma.i!=sigma.j
+bartlett.test(dev, days)
+# p-value < 2.2e-16... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
+
+fit <- aov(dev ~ days)
+summary(fit) # 0.495
+
+detach(New_York_County)
 detach(census_blocks_ny)
