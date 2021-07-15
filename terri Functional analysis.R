@@ -354,4 +354,3 @@ kma.compare_example2 <- kma.compare (
   center.method = 'k-means', 
   #seeds = c(1,21,30),
   plot.graph=1)
-

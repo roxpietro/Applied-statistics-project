@@ -128,6 +128,7 @@ coord_cTS <- as.numeric(unlist(centroid_TimesSquare))
 coord_cTS.x_long <- coord_cTS[1]
 coord_cTS.y_lat <- coord_cTS[2]
 distance<-distm(cbind(coord.x_long, coord.y_lat), cbind(coord_cTS.x_long, coord_cTS.y_lat), fun = distGeo)
+
 data_spatial <-data.frame(coord.x,coord.y, median_dwell, distance)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
