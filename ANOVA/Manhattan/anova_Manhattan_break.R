@@ -1,17 +1,19 @@
 # Set Working Directory
-setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/anova")
+setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANOVA/Manhattan")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/LAB_5/mcshapiro.test.RData")
 
 # Load Dataset
-load("~/Documenti/UNIVERSITA/STAT APP/progetto/New York County.RData")
-load("~/Documenti/UNIVERSITA/STAT APP/progetto/Cyber.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
-attach(sub_patt)
-attach(census_blocks_ny)
+attach(CBG_ny_no_river)
+attach(New_York_County_no_river)
 
 library(RColorBrewer)
 
-n <- dim(sub_patt)[1];
+n <- dim(New_York_County_no_river)[1];
 g1 <- 5;
 col_food_hours <-brewer.pal(n = g1, name = 'Accent'); 
 
@@ -34,6 +36,17 @@ for (i in 1:n){
   dev[i*5] <- sum(nightlife_device_home_areas[[i]]);
 }
 
+x11()
+plot(dev)
+abline(h=5000)
+rem <- which(dev >5000)
+k <- which( New_York_County_no_river$area %in% CBG_ny_no_river$CensusBlockGroup[floor(rem/5)])
+for(i in 1:3){
+  points((5*k[i]):(5*k[i]+5),dev[(5*k[i]):(5*k[i]+5)], col ='red')
+}
+
+CBG_ny_no_river$CensusBlockGroup[floor(rem/5)]
+dev[rem]
 #x11()
 png(file = "Manhattan boxplot food hours.png")
 boxplot( dev ~ days, main = "food hours")
@@ -56,7 +69,7 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[4] ])$p,
         shapiro.test(dev[ days==group[5] ])$p)
 Ps        
-# 1.318687e-53 3.526374e-52 6.155367e-58 3.729458e-58 4.168776e-57
+# 1.139160e-52 2.376162e-51 8.842586e-57 5.225849e-57 5.152134e-56
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
@@ -64,7 +77,7 @@ Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[3] ]),
          var(dev[ days==group[4] ]),
          var(dev[ days==group[5] ]));
-Var
+Var #146360.16 175660.43 285537.62 588992.21  85361.97
 x11()
 plot(Var, ylim = c(0, max(Var)), xlab=levels(days))   
 # group DINNER ha varianza molto più grande
@@ -77,16 +90,16 @@ bartlett.test(dev, days)
 
 fit <- aov(dev~days)
 summary(fit)
-# p-value 1.1e-14 *** : H0 refused -> different mean
+# p-value 4.61e-15 ***: H0 refused -> different mean
 #______________________________________________________________________________
 #   WITH DENSITY
 # Calcolo aree per calcolo density
 
 library(geosphere)
 
-area_cbg=matrix(nrow = 1, ncol = 15463)
-for (i in 1:15463) {
-  coords=census_blocks_ny$geometry[[i]][[1]][[1]]
+area_cbg=matrix(nrow = 1, ncol = n)
+for (i in 1:n) {
+  coords=geometry[[i]][[1]][[1]]
   area_cbg[i]=areaPolygon(coords);
 }
 area_cbg=area_cbg/10^6;
@@ -96,13 +109,12 @@ group <- c('breakfast', 'lunch', 'tea', 'dinner', 'night');
 days <- rep(group, times = n);
 
 for (i in 1:n){
-  j <- match(area[i],CensusBlockGroup);
   dev[i*5 - 4] <- sum(breakfast_device_home_areas[[i]]);
   dev[i*5 - 3] <- sum(lunch_device_home_areas[[i]]);
   dev[i*5 - 2] <- sum(afternoon_tea_device_home_areas[[i]]);
   dev[i*5 - 1] <- sum(dinner_device_home_areas[[i]]);
   dev[i*5 ] <- sum(nightlife_device_home_areas[[i]]);
-  dev[i:i+5] <- dev[i:i+5] / area_cbg[j];
+  dev[i:i+5] <- dev[i:i+5] / area_cbg[i];
 }
 
 #x11()
@@ -127,7 +139,7 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[4] ])$p,
         shapiro.test(dev[ days==group[5] ])$p)
 Ps        
-# 1.744527e-55 2.053486e-57 2.813993e-59 2.809825e-60 9.789645e-55
+# 3.525285e-59 2.356852e-54 1.232153e-58 2.677464e-58 2.138138e-58
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
@@ -135,7 +147,7 @@ Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[3] ]),
          var(dev[ days==group[4] ]),
          var(dev[ days==group[5] ]));
-Var
+Var #20304061906    96333127   495773316   365064256   111602807
 x11()
 plot(Var, ylim = c(0, max(Var)))   
 # group DINNER ha varianza molto più grande
@@ -148,6 +160,6 @@ bartlett.test(dev, days)
 
 fit <- aov(dev ~ days)
 summary(fit)
-# p-value 0.0925 .  -> mh ... H0 si può rifiutare fino a livello 0.09 altrimenti sotto no
-detach(sub_patt);
-detach(census_blocks_ny)
+# p-value 0.43 azzzz
+detach(New_York_County_no_river);
+detach(CBG_ny_no_river)

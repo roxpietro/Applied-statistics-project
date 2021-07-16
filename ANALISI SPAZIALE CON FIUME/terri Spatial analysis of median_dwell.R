@@ -289,7 +289,7 @@ coordinates(stop.new) <- c('coord.x','coord.y')
 
 predict(g.tr, stop.new, BLUE = FALSE)
 
-### grafici su manhattan con colori rispetto a una quantità spatial ------------
+### GRAFICI su manhattan con colori rispetto a una quantità spatial ------------
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
@@ -312,7 +312,8 @@ coord.y <- coord.UTM.NY@coords[,2]
 z<- ....
 
 ##focus su DISTANCE_FROM_HOME
-rem <- which(distance_from_home > 30000) #[³6] > 125000, [175]  > 50000, [1,9] >30000 
+rem <- which(distance_from_home > 20000) #[36] > 125000, [175]  > 50000, [1,9] >30000 
+CBG_ny_no_river$CensusBlockGroup[rem]
 #dati molto alti che non fanno vedere pattern nel grafico -> da capire se togliere o no
 min(distance_from_home)
 max(distance_from_home)
@@ -360,7 +361,7 @@ plot(v.slog, fit1, pch = 3)
 v.sbc <- variogram(bc.distance_from_home ~ 1, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
 fit1=fit.variogram(v.sbc, vgm(0.4, model='Exp', 5000, nugget=0.2))
 x11()
-plot(v.s, fit1, pch = 3)
+plot(v.sbc, fit1, pch = 3)
 
 #--------------------------------
 # non stationary variogram v
