@@ -12,62 +12,10 @@ library(ggplot2)
 library(raster)
 library(rgdal)
 
-# fra
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA 
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
-# terri
-# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
-# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Conversione dal dataset originale ad adesso/Cyber_Capital.RData")
-# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 
-# order patterns_ny and census_block_ny by CBG of New York County
-New_York_County=New_York_County[order(New_York_County$area),]
-CBG_ny_index = which(census_blocks_ny$County=="New York County")
-CBG_ny = census_blocks_ny[CBG_ny_index,]
-
-
-# make the two datasets equal
-remove=c()
-k=1
-for (i in 1:1170) {
-  index=which(New_York_County$area==CBG_ny$CensusBlockGroup[i])
-  if (length(index)==0) {
-    remove[k]=i
-    k=k+1
-  }
-}
-
-CBG_ny=CBG_ny[-remove,]
-CBG_ny=CBG_ny[order(CBG_ny$CensusBlockGroup),]
-
-CBG_ny_index=CBG_ny_index[-remove]
-
-rm (patterns_ny)
-rm (census_blocks_ny)
-rm(census_metadata)
-
-#------------------------------------------------------------
-# TROVIAMO I CBG DEI FIUMI
-
-track_code_river <- c("027500", "025500", "024700", "024100", "023700", "023300", "022900", "022500", "022301", "021900","021100","020500", "019900", "019500",
-                      "019100", "018700", "018300", "017900", "017500", "017100","016700", "016300", "015900", "015500", "015100", "013500", "012900", "011700", "009900", "007900", "007500", "006900", "003700",
-                      "003900", "031703", "031704","031900", "000500", "000900","000700", "001502", "001501", "002500", "000800","000600","000201", "000202", "001001", "001002", "002000", "002400", "004400",
-                      "006000", "006200", "008601", "008602", "023801", "010601","010602","011600", "012400", "013200", "013600", "023802", "015200","017800", "019200", "024200", "021000", "023600", "024302", "031100",
-                      "029900", "029700", "028700", "022302", "016200", "024000")
-
-index_river=c()
-k=1
-for (i in 1:dim(CBG_ny)[1]) {
-  if (CBG_ny$TractCode[i] %in% track_code_river ) {
-    if (CBG_ny$BlockGroup[i] == "0") {
-      index_river[k] = i
-      k=k+1
-    }
-  }
-}
-CBG_ny_no_river<-CBG_ny[-index_river,]
-#save (CBG_ny_no_river, file="CBG_NY_no_river.RData")
 
 
 #-----------------------------------------------------------
@@ -88,7 +36,7 @@ coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
 
 x11() #controlla se plotta i centroidi
 plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
-text(coord.x_long,coord.y_lat, labels=CBG_ny_no_river$area, cex=1)
+text(coord.x_long,coord.y_lat, labels=CBG_ny_no_river$CensusBlockGroup, cex=1)
 
 
 coord<-SpatialPoints(cbind(coord.x_long,coord.y_lat),proj4string=CRS("+proj=longlat"))
@@ -118,8 +66,8 @@ distance<-c()
 # for (i in 1:1092)
 #   distance[i]<-dist[i,which.min(dist[i,])]
 # 
- New_York_County<-New_York_County[-index_river,]
-attach(New_York_County)
+
+attach(CBG_ny_no_river)
 
 #f(s_i) = distanza da ipotetico centro di times square
 k <- which(CBG_ny_no_river$TractCode == '011300')
@@ -136,8 +84,9 @@ hist(median_dwell, breaks=16, col="grey", main='Histogram of median dwell', prob
 # highly skewed, transform to the log
 hist(log(median_dwell), breaks=16, col="grey", main='Histogram of log(median_dwell)', prob = TRUE, xlab = 'log(median_dwell)')
 
+rem <- which(median_dwell > 350)
 ggplot() + 
-  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=median_dwell))+scale_fill_gradient(low="lightyellow", high="darkred") +
+  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=median_dwell[-rem]))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_RIVER$geometry, fill = "lightblue")+
   geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="blue")
 
@@ -180,11 +129,11 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
 #--------------------------------
  # non stationary variogram v
  
- v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data_spatial)
+ v <- variogram(log(median_dwell) ~ DUMMY + sqrt(distance) + sqrt(distance)*DUMMY, data = data_spatial)
  plot(v)
  
  # non converge, dato che c'? poca variabilit? tra i dati
- v <- variogram(log(median_dwell) ~ DUMMY + distance + distance*DUMMY, data = data,boundaries = c(0,200,seq(400,6000,450)))
+ v <- variogram(log(median_dwell) ~ DUMMY + sqrt(distance) + sqrt(distance)*DUMMY, data = data,boundaries = c(0,200,seq(400,6000,450)))
  plot(v)
  v.fit <- fit.variogram(v, vgm(0.4, "Exp", 3000, 0.2))
  x11()
@@ -272,4 +221,88 @@ sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
  coordinates(stop.new) <- c('coord.x','coord.y')
  
  predict(g.tr, stop.new, BLUE = FALSE)
+ 
+ 
+ 
+ #----------------------------------------------------
+ # rimuovo i picchi
+ med_dwell <- median_dwell[-rem]
+ dist <- distance[-rem]
+ data_spat <- data.frame(coord.x[-rem],coord.y[-rem], med_dwell, dist)
+ names(data_spat) <- c('x','y','dist home', 'distance')
+ coordinates(data_spat)<-c('x', 'y')
+ 
+ x11()
+ xyplot(log(med_dwell) ~ sqrt(distance), as.data.frame(data_spat))
+ 
+ library(car)
+ lambda <- powerTransform(med_dwell)
+ bc.med_dwell <- bcPower(med_dwell, lambda$lambda)
+ 
+ hist(bc.med_dwell, breaks=16, col="grey", main='Histogram of bc dist', prob = TRUE, xlab = 'bc dist from home')
+ 
+ x11()
+ xyplot(bc.med_dwell ~ sqrt(dist), as.data.frame(data_spat))
+ 
+ # stationary variogram v1
+ 
+ v.1 <- variogram(log(med_dwell) ~ 1, data = data_spat,boundaries = c(0,seq(10,3000,300)))
+ fit1=fit.variogram(v.1, vgm(0.4, model='Exp', 5000, nugget=0.2))
+ fit1
+ 
+ x11()
+ plot(v.1, fit1, pch = 3)
+ 
+
+ # non stationary variogram v
+ 
+ v <- variogram(log(med_dwell) ~ sqrt(dist), data = data_spat)
+ plot(v)
+ 
+ # non converge, dato che c'? poca variabilit? tra i dati
+ v <- variogram(log(med_dwell) ~ sqrt(dist) , data = data_spat,boundaries = c(0,seq(10,3000,300)))
+ plot(v)
+ v.fit <- fit.variogram(v, vgm(0.4, "Exp", 3000, 0.2))
+ x11()
+ plot(v, v.fit, pch = 3)
+ v.fit
+ 
+ 
+ # stationary variogram v1
+ 
+ v.1 <- variogram(bc.med_dwell ~ 1, data = data_spat,boundaries = c(0,seq(10,3000,300)))
+ fit1=fit.variogram(v.1, vgm(6, model='Exp', 5000, nugget=2))
+ fit1
+ 
+ x11()
+ plot(v.1, fit1, pch = 3)
+ 
+ 
+ # non stationary variogram v
+ 
+ v <- variogram(bc.med_dwell ~ sqrt(dist), data = data_spat)
+ plot(v)
+ 
+ # non converge, dato che c'? poca variabilit? tra i dati
+ v <- variogram(bc.med_dwell ~ sqrt(dist) , data = data_spat,boundaries = c(0,seq(10,3000,300)))
+ plot(v)
+ v.fit <- fit.variogram(v, vgm(6, "Exp", 3000, 2))
+ x11()
+ plot(v, v.fit, pch = 3)
+ v.fit
+ 
+ # compare the two variograms
+ v.f.est<-function(x,C0, ...){C0-cov.spatial(x, ...)}
+ 
+ x11()
+ plot(v$dist,v$gamma,xlab='distance',ylab='semivariance',pch=19,col='red', ylim=c(5.5, 7))
+ curve(v.f.est(x, C0=v.fit[2,2]+v.fit[1,2], cov.pars=rbind(c(v.fit[2,2], v.fit[2,3]),c(v.fit[1,2], v.fit[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 3000,
+       xlab = "distance", ylab = expression(gamma(h)),
+       main = "Variogram model",add=TRUE,col='red',lwd=2)
+ 
+ points(v.1$dist,v.1$gamma,xlab='distance',ylab='semivariance',pch=19,col='steelblue')
+ curve(v.f.est(x, C0=fit1[2,2]+fit1[1,2], 
+               cov.pars=rbind(c(fit1[2,2], fit1[2,3]),c(fit1[1,2], fit1[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 3000,
+       xlab = "distance", ylab = expression(gamma(h)),
+       main = "Variogram model",add=TRUE,col='steelblue',lwd=2)
  
