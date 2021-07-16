@@ -42,11 +42,15 @@ abline(h=5000)
 rem <- which(dev >5000)
 k <- which( New_York_County_no_river$area %in% CBG_ny_no_river$CensusBlockGroup[floor(rem/5)])
 for(i in 1:3){
-  points((5*k[i]):(5*k[i]+5),dev[(5*k[i]):(5*k[i]+5)], col ='red')
+  points((5*k[i]):(5*k[i]+4),dev[(5*k[i]):(5*k[i]+4)], col ='red')
 }
 
 CBG_ny_no_river$CensusBlockGroup[floor(rem/5)]
-dev[rem]
+#remove possible "outliers"
+for (i in 1:length(k))
+  remove <- c(remove,(5*k[i]):(5*k[i]+4))
+dev<- dev[-remove]
+days <- days[-remove]
 #x11()
 png(file = "Manhattan boxplot food hours.png")
 boxplot( dev ~ days, main = "food hours")
@@ -69,7 +73,7 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[4] ])$p,
         shapiro.test(dev[ days==group[5] ])$p)
 Ps        
-# 1.139160e-52 2.376162e-51 8.842586e-57 5.225849e-57 5.152134e-56
+#1.992268e-44 1.763483e-42 4.597487e-42 3.363985e-42 5.107495e-39
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
@@ -77,7 +81,7 @@ Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[3] ]),
          var(dev[ days==group[4] ]),
          var(dev[ days==group[5] ]));
-Var #146360.16 175660.43 285537.62 588992.21  85361.97
+Var #57093.30 74380.83 29484.87 53923.08 11731.71
 x11()
 plot(Var, ylim = c(0, max(Var)), xlab=levels(days))   
 # group DINNER ha varianza molto più grande
@@ -90,7 +94,7 @@ bartlett.test(dev, days)
 
 fit <- aov(dev~days)
 summary(fit)
-# p-value 4.61e-15 ***: H0 refused -> different mean
+# p-value <2e-16 ***: H0 refused -> different mean (sia con che senza outliers)
 #______________________________________________________________________________
 #   WITH DENSITY
 # Calcolo aree per calcolo density
@@ -117,6 +121,22 @@ for (i in 1:n){
   dev[i:i+5] <- dev[i:i+5] / area_cbg[i];
 }
 
+x11()
+plot(dev)
+abline(h=10^5)
+rem <- which(dev >10^5)
+k <- which( New_York_County_no_river$area %in% CBG_ny_no_river$CensusBlockGroup[floor(rem/5)])
+for(i in 1:length(k)){
+  points((5*k[i]):(5*k[i]+4),dev[(5*k[i]):(5*k[i]+4)], col ='red')
+}
+
+CBG_ny_no_river$CensusBlockGroup[floor(rem/5)]
+#rimuovo outliers
+remove <-c()
+for (i in 1:length(k))
+  remove <- c(remove,(5*k[i]):(5*k[i]+4))
+dev<- dev[-remove]
+days <- days[-remove]
 #x11()
 png(file = "Manhattan boxplot density food hours.png")
 boxplot( dev ~ days, main = "density food hours")
@@ -140,6 +160,7 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[5] ])$p)
 Ps        
 # 3.525285e-59 2.356852e-54 1.232153e-58 2.677464e-58 2.138138e-58
+#senza outliers 3.098559e-52 1.581097e-51 4.262703e-53 1.226133e-51 3.186385e-52
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
@@ -148,6 +169,7 @@ Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[4] ]),
          var(dev[ days==group[5] ]));
 Var #20304061906    96333127   495773316   365064256   111602807
+# senza outliers 26073494 45472261 21499049 24327728  6663778
 x11()
 plot(Var, ylim = c(0, max(Var)))   
 # group DINNER ha varianza molto più grande
@@ -161,5 +183,6 @@ bartlett.test(dev, days)
 fit <- aov(dev ~ days)
 summary(fit)
 # p-value 0.43 azzzz
+# 2.22e-10 *** senza outliers
 detach(New_York_County_no_river);
 detach(CBG_ny_no_river)
