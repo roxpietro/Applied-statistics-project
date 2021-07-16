@@ -151,7 +151,7 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 
 
 
-
+x11()
 media <- mean.fd(data_W.fd.1)
 
 plot(media,lwd=2,ylim=c(-25,20),ylab='temperature',main='FPC1')

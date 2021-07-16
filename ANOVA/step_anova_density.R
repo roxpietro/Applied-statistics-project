@@ -15,7 +15,7 @@ load("~/Documenti/UNIVERSITA/STAT APP/progetto/Patterns_NY.RData")
 load("~/Documenti/UNIVERSITA/STAT APP/progetto/Cyber.RData")
 
 attach(Patterns_NY)
-attach(census_blocks_ny)
+attach( CBG_ny_no_river)
 
 # -------------------------------------------------------------------------------------------------------------------------
 # Calcolo density
@@ -25,8 +25,8 @@ library(geosphere)
 area_cbg=matrix(nrow = 1, ncol = 15463)
 #par(mfrow=c(4,5))
 for (i in 1:15463) {
-  #points=census_blocks_ny$geometry[[i]][[1]][[1]][,1],census_blocks_ny$geometry[[i]][[1]][[1]][,2]
-  coords=census_blocks_ny$geometry[[i]][[1]][[1]]
+  #points= CBG_ny_no_river$geometry[[i]][[1]][[1]][,1], CBG_ny_no_river$geometry[[i]][[1]][[1]][,2]
+  coords= CBG_ny_no_river$geometry[[i]][[1]][[1]]
   area_cbg[i]=areaPolygon(coords)
 }
 
@@ -34,7 +34,7 @@ area_cbg=area_cbg/10^6;
 
 devperkm <- rep(0,15446);
 for (i in 1:15446){
-  j <- match(Patterns_NY$area[i],census_blocks_ny$CensusBlockGroup);
+  j <- match(Patterns_NY$area[i], CBG_ny_no_river$CensusBlockGroup);
   devperkm[i] <- Patterns_NY$raw_device_counts[i]/area_cbg[j];
 }
 
@@ -364,7 +364,7 @@ county_days = c();
 settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
 
 for(i in 1: n){
-  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe census_blocks_ny
+  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe  CBG_ny_no_river
   for (l in 1: length(NY_counties)){
     if(County[j] == NY_counties[l]){
       tot <- tot + 1;
@@ -501,7 +501,7 @@ for (i in 2:15446){
   list_county = unique(list_county);
 }
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
-n <- dim(New_York_County)[1];
+n <- dim( New_York_County_no_river)[1];
 
 dev <- c();
 count <- rep(0, length(list_county)); #to check if tot cbg = ncounties * count
@@ -511,7 +511,7 @@ settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
 
 for (l in 1: length(list_county)){ #loop on counties
    for(i in 1: n){                 #loop on CBGs
-     j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe census_blocks_ny
+     j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe  CBG_ny_no_river
      if(County[j] == "New York County"){ #list_county[l]
       tot <- tot + 1;
       lun <- Patterns_NY$stops_by_day[[i]][seq(1,30,7)];
@@ -604,19 +604,41 @@ for (l in 1: length(list_county)){ #loop on counties
 
 
 detach(Patterns_NY)
-detach(census_blocks_ny)
+detach( CBG_ny_no_river)
+
+
+
+
+
 ### ------only manhattan--------------------------------------------------------
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData") #TERRI
-n <- dim(New_York_County)[1];
-attach(New_York_County)
-attach(census_blocks_ny)
+#load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Data frame county/New York County.RData")
+
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+
+n <- dim( New_York_County_no_river)[1];
+attach( New_York_County_no_river)
+attach(CBG_ny_no_river)
+
+
+library(geosphere)
+
+area_cbg=matrix(nrow = 1, ncol = 1092)
+#par(mfrow=c(4,5))
+for (i in 1:1092) {
+  #points= CBG_ny_no_river$geometry[[i]][[1]][[1]][,1], CBG_ny_no_river$geometry[[i]][[1]][[1]][,2]
+  coords= CBG_ny_no_river$geometry[[i]][[1]][[1]]
+  area_cbg[i]=areaPolygon(coords)
+}
+
+area_cbg=area_cbg/10^6;
 
 dev <- c();
 tot <- 0; #conterà quanti cbg della county sta trovando
 settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
 
 for(i in 1: n){                 #loop on CBGs
-  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe census_blocks_ny
+  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe  CBG_ny_no_river
   if(County[j] == "New York County"){ #list_county[l]
     tot <- tot + 1;
     lun <- stops_by_day[[i]][seq(1,30,7)];
@@ -704,16 +726,22 @@ for (i in 1:n){
   dev[i+1] <- mean(tot)/area_cbg[j];
   
 }
-plot(dev[seq(1,n,2)])
-plot(log(dev))
-abline
-points(dev[remove], col ='red')
-remove <- which(dev > 3*10^3)
 
-setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANOVA/Manhattan")
- x11()
+remove <- which(dev > 3*10^4)
+plot(dev, xlim=c(0,2300))
+abline(h=3*10^4)
+par(new=TRUE)
+points(remove,dev[remove], col ='red',xlim=c(0,2300))
+
+
+# proviamo a togliere questi outliers
+
+dev<-dev[-remove]
+days<-days[-remove]
+ 
+x11()
 #png(file = "boxplot_work.png")
-boxplot( log(dev) ~ days, main = "weekend vs work days")
+boxplot( (dev) ~ days, main = "weekend vs work days")
 dev.off()
 
 #qua infatti le medie confrontando le densità sembrano differenti
@@ -747,6 +775,7 @@ Ps
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
 Var #12021732  2350414
+
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
@@ -758,5 +787,5 @@ bartlett.test(dev, days)
 fit <- aov(dev ~ days)
 summary(fit) # 0.495
 
-detach(New_York_County)
-detach(census_blocks_ny)
+detach( New_York_County_no_river)
+detach( CBG_ny_no_river)

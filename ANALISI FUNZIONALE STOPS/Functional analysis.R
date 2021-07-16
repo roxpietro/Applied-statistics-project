@@ -194,17 +194,17 @@ par(mfrow=(c(2,2)))
 for(i in 1:4){
   matplot(stops[(i*7-6):(i*7),],type='l')
 }
-
-
+x11()
+matplot(stops, type="l")
 
 #B-SPLINES
 # Set parameters
-nbasis <- 13
-m <- 3+1        # spline order 
+nbasis <- 12
+m <- 2+1        # spline order 
 # spline degree  #DEGREE = ORDER - 1
 basis <- create.bspline.basis(rangeval=c(1,30), nbasis=nbasis, norder=m)
 
-
+x11()
 time=1:30
 data_W.fd.1 <- Data2fd(y = stops,argvals = time,basisobj = basis) #SMOOTHING
 plot.fd(data_W.fd.1)
@@ -273,7 +273,7 @@ basis <- create.fourier.basis(rangeval=c(1,30),nbasis=nbasis) # creates a fourie
 
 time=1:30
 data_W.fd.1 <- Data2fd(y = stops,argvals = time,basisobj = basis) #SMOOTHING
-plot.fd(data_W.fd.1, ylim = c(0,2000))
+plot.fd(data_W.fd.1)
 
 
 
@@ -296,6 +296,20 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 par(mfrow=c(1,3))
 plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALSE)
 
+x11()
+par(mfrow=c(1,2))
+media <- mean.fd(data_W.fd.1)
+
+plot(media,lwd=2,ylim=c(0,700),ylab='temperature',main='FPC1')
+lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
+lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
+abline(v=seq(1,30, by=7))
+
+plot(media,lwd=2,ylim=c(150,500),lab='temperature',main='FPC2')
+lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
+lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
+abline(v=seq(1,30, by=7))
+
 # scatter plot of the scores
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
@@ -304,6 +318,11 @@ x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
 text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
+
+x11()
+matplot(stops,type='l')
+lines(stops[,58],lwd=4, col=1) 
+lines(stops[,3],lwd=4, col=1) 
 
 
 #--------------------------------------------------------------------
@@ -425,12 +444,12 @@ fdakma_example <- kma(
   y0=t(Xsp0),
   y1=t(Xsp1), 
   n.clust = 2, 
-  warping.method = 'affine', # trasformation of an axis in order to do align
+  warping.method = 'dilation', # trasformation of an axis in order to do align
   similarity.method = 'd1.pearson',  # similarity computed as the cosine
   # between the first derivatives 
   # (correlation)
-  center.method = 'k-means'
-  #seeds = c(1,21) # you can give a little help to the algorithm...
+  center.method = 'k-means',
+  seeds = c(58,3) # you can give a little help to the algorithm...
 )
 
 kma.show.results(fdakma_example)

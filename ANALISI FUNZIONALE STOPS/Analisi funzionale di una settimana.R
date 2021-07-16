@@ -124,6 +124,18 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 par(mfrow=c(1,3))
 plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALSE)
 
+x11()
+media <- mean.fd(data_W.fd.1)
+
+plot(media,lwd=2,ylim=c(-2,260),ylab='temperature',main='FPC1')
+lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
+lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
+
+
+plot(media,lwd=2,ylim=c(0,150),lab='temperature',main='FPC2')
+lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
+lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
+
 # scatter plot of the scores
 par(mfrow=c(1,2))
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
@@ -156,10 +168,10 @@ library(fdakma)
 fdakma_example <- kma(
   x=x, 
   y0=t(Xsp0),
-  #y1=t(Xsp1), 
+  y1=t(Xsp1), 
   n.clust = 2, 
-  warping.method = 'affine', # trasformation of an axis in order to do align
-  similarity.method = 'd0.pearson',  # similarity computed as the cosine
+  warping.method = 'NOalignment', # trasformation of an axis in order to do align
+  similarity.method = 'd1.pearson',  # similarity computed as the cosine
   # between the first derivatives 
   # (correlation)
   center.method = 'k-medoids',
@@ -167,4 +179,14 @@ fdakma_example <- kma(
 )
 
 kma.show.results(fdakma_example)
+
+
+#------------------------------------------------------------
+# altra possibile clusterizzazione: vedere la differenza tra weekday e weekend, 
+#in particolare la differenza tra gli stops del venerdi e del sabato
+
+cbg_lavorativi<-which(abs(stops[5,]-stops[6,])>300)
+cbg_lavorativi<-stops[,cbg_lavorativi]
+matplot(cbg_lavorativi, type="l")
+
 
