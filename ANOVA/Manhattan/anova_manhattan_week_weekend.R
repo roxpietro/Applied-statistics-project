@@ -58,19 +58,34 @@ for (i in seq(1,n)){
   
 }
 
-remove <- which(dev > 3*10^4)
+remove <- which(dev > 10^4)
 index<-floor(remove/2)
 print(New_York_County_no_river$area[index])
+
+x11()
 plot(dev)
 abline(h=3*10^4)
 par(new=TRUE)
 points(remove,dev[remove], col ='red',xlim=c(0,2300))
 
+k<-index
+rem<-c()
+for(i in 1:length(k)){
+  points((2*k[i]):(2*k[i]+1),dev[(2*k[i]):(2*k[i]+1)], col ='red')
+  rem<-c(rem,(2*k[i]):(2*k[i]+1) )
+}
+
+
+#x11()
+png(file = "Manhattan boxplot food hours.png")
+boxplot( dev ~ days, main = "food hours")
+dev.off()
+
+
 
 # proviamo a togliere questi outliers
-
-dev<-dev[-remove]
-days<-days[-remove]
+dev<-dev[-rem]
+days<-days[-rem]
 
 plot(dev, col=(factor(days)))
 
@@ -130,7 +145,7 @@ T0 <- summary(fit)[[1]][1,4] #f value dell'anova
 T0
 
 # what happens if we permute the data?
-permutazione <- sample(1:2175)
+permutazione <- sample(1:2160)
 dev_perm <- dev[permutazione]
 fit_perm <- aov(dev_perm ~ days)
 summary(fit_perm)
@@ -145,7 +160,7 @@ n <- dim(dev_perm)[1]
 
 for(perm in 1:B){
   # Permutation:
-  permutazione <- sample(1:2175)
+  permutazione <- sample(1:2160)
   dev_perm <- dev[permutazione]
   fit_perm <- aov(dev_perm ~ days)
   
