@@ -43,9 +43,10 @@ max(distance_from_home)
 # data_spatial <-data.frame(coord.x,coord.y, z)
 # coordinates(data_spatial)<-c('coord.x', 'coord.y')
 x11()
-png(file = "glop distance from home")
+#png(file = "glop distance from home")
+distance__from_home <-distance_from_home[-rem]
 ggplot() + 
-  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance_from_home[-rem]))+scale_fill_gradient(low="lightyellow", high="red") +
+  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance__from_home))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_ny_no_river$geometry[rem,], fill="black")+
   geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="yellow") +
   geom_sf(data = CBG_RIVER$geometry, fill="lightblue")
