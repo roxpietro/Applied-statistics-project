@@ -91,11 +91,29 @@ dev <- rep(0.0, times = n*2);
 group <- c('weekday', 'weekend');
 days <- rep(group, times = n);
 
-for (i in seq(1,n,2)){
+for (i in 1:n){
   #j <- match(area[i],CensusBlockGroup);
   dev[2*i -1] <- sum(weekday_device_home_areas[[i]]);
   dev[2*i] <- sum(weekend_device_home_areas[[i]]);
 }
+
+x11()
+plot(dev)
+abline(h=10000)
+rem <- which(dev >10000)
+k <- which( New_York_County_no_river$area %in% CBG_ny_no_river$CensusBlockGroup[floor(rem/2)])
+for(i in 1:length(k)){
+  points((2*k[i]):(2*k[i]+1),dev[(2*k[i]):(2*k[i]+1)], col ='red')
+}
+
+CBG_ny_no_river$CensusBlockGroup[floor(rem/2)]
+#rimuovo outliers
+remove <-c()
+for (i in 1:length(k))
+  remove <- c(remove,(2*k[i]):(2*k[i]+1))
+dev<- dev[-remove]
+days <- days[-remove]
+
 
 # x11()
 png(file = "Manhattan boxplot with dha.png")
@@ -118,11 +136,13 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
 # 9.230507e-44 1.160269e-42
+# senza outliers 1.075502e-42 5.192324e-50
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
 Var #238185.67  37182.91
+# senza outliers 358881.8 102402.1
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
@@ -133,7 +153,7 @@ bartlett.test(dev, days)
 
 fit <- aov(dev ~ days)
 summary(fit)
-# <2e-16 *** -> refuse H0: different mean
+# <2e-16 *** -> refuse H0: different mean (sia con che senza outliers)
 
 #______________________________________________________________________________
 #   WITH DENSITY
@@ -224,6 +244,23 @@ for (i in 1:n){
   dev[2*i] <- sum(weekend_device_home_areas[[i]])  / area_cbg[j];
 }
 
+x11()
+plot(dev)
+abline(h=2*10^5)
+rem <- which(dev >2*10^5)
+k <- which( New_York_County_no_river$area %in% CBG_ny_no_river$CensusBlockGroup[floor(rem/2)])
+for(i in 1:length(k)){
+  points((2*k[i]):(2*k[i]+1),dev[(2*k[i]):(2*k[i]+1)], col ='red')
+}
+
+CBG_ny_no_river$CensusBlockGroup[floor(rem/2)]
+#rimuovo outliers
+remove <-c()
+for (i in 1:length(k))
+  remove <- c(remove,(2*k[i]):(2*k[i]+1))
+dev<- dev[-remove]
+days <- days[-remove]
+
 # x11()
 png(file = "Manhattan boxplot with density dha.png")
 boxplot( dev ~ days, main = "weekdays vs weekend")
@@ -245,11 +282,13 @@ Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
 #  4.689057e-59 4.986713e-59
+#senza outliers 2.040877e-45 6.358536e-49
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
 Var # 31984008762  4549961047
+# senza outliers 125018469  29500957
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
@@ -261,6 +300,7 @@ bartlett.test(dev, days)
 fit <- aov(dev ~ days)
 summary(fit)
 #  0.0365 * -> refuse H0: different mean
+#  <2e-16 *** senza outliers
 
 
 detach(New_York_County_no_river)
