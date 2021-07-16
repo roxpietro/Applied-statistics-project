@@ -39,34 +39,6 @@ for (i in 1:1092) {
 
 area_cbg=area_cbg/10^6;
 
-dev <- c();
-tot <- 0; #conterà quanti cbg della county sta trovando
-settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
-
-for(i in 1: n){                 #loop on CBGs
-  if(County[i] == "New York County"){ #list_county[l]
-    tot <- tot + 1;
-    lun <- stops_by_day[[i]][seq(1,30,7)];
-    mar <- stops_by_day[[i]][seq(2,30,7)];
-    mer <- stops_by_day[[i]][seq(3,30,7)];
-    gio <- stops_by_day[[i]][seq(4,30,7)];
-    ven <- stops_by_day[[i]][seq(5,30,7)];
-    sab <- stops_by_day[[i]][seq(6,30,7)];
-    dom <- stops_by_day[[i]][seq(7,30,7)];
-    dev[(tot*7 - 6): (tot*7)] <- c(mean(lun)/area_cbg[i], mean(mar)/area_cbg[i], 
-                                   mean(mer)/area_cbg[i], mean(gio)/area_cbg[i],
-                                   mean(ven)/area_cbg[i], mean(sab)/area_cbg[i],
-                                   mean(dom)/area_cbg[i]);
-  }
-}
-
-
-days <- rep(settimana, times = tot);
-#days <- factor(days);
-
-
-
-
 
 
 dev <- rep(0.0, times = 2*n);
@@ -74,7 +46,6 @@ group <- c('work day', 'weekend');
 days <- rep(group, times = n);
 k=1
 for (i in seq(1,n)){
-  j <- match(area[i],CensusBlockGroup);
   tot = c(stops_by_day[[i]][seq(1,30,7)], stops_by_day[[i]][seq(2,30,7)],
           stops_by_day[[i]][seq(3,30,7)], stops_by_day[[i]][seq(4,30,7)],
           stops_by_day[[i]][seq(5,30,7)]);
@@ -88,6 +59,8 @@ for (i in seq(1,n)){
 }
 
 remove <- which(dev > 3*10^4)
+index<-floor(remove/2)
+print(New_York_County_no_river$area[index])
 plot(dev)
 abline(h=3*10^4)
 par(new=TRUE)
