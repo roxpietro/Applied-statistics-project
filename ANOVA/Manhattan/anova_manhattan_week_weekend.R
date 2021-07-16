@@ -1,7 +1,13 @@
 ### anova manhattan week vs weekend ###
 
+library(sp) 
+library(sf) 
+
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
 #install.packages("RColorBrewer")
 library(RColorBrewer)
@@ -20,7 +26,7 @@ attach(CBG_ny_no_river)
 
 library(geosphere)
 
-area_cbg=matrix(nrow = 1, ncol = 1092)
+area_cbg=c()
 #par(mfrow=c(4,5))
 for (i in 1:1092) {
   #points= CBG_ny_no_river$geometry[[i]][[1]][[1]][,1], CBG_ny_no_river$geometry[[i]][[1]][[1]][,2]
@@ -35,8 +41,7 @@ tot <- 0; #conterà quanti cbg della county sta trovando
 settimana <- c('1mon', '2tue', '3wen', '4thu', '5fri','6sat', '7sun');
 
 for(i in 1: n){                 #loop on CBGs
-  j <- match(area[i],CensusBlockGroup); #estrae gli indici delle cbg in PatternNY corrispondenti ai CBG nel dataframe  CBG_ny_no_river
-  if(County[j] == "New York County"){ #list_county[l]
+  if(County[i] == "New York County"){ #list_county[l]
     tot <- tot + 1;
     lun <- stops_by_day[[i]][seq(1,30,7)];
     mar <- stops_by_day[[i]][seq(2,30,7)];
@@ -45,10 +50,10 @@ for(i in 1: n){                 #loop on CBGs
     ven <- stops_by_day[[i]][seq(5,30,7)];
     sab <- stops_by_day[[i]][seq(6,30,7)];
     dom <- stops_by_day[[i]][seq(7,30,7)];
-    dev[(tot*7 - 6): (tot*7)] <- c(mean(lun)/area_cbg[j], mean(mar)/area_cbg[j], 
-                                   mean(mer)/area_cbg[j], mean(gio)/area_cbg[j],
-                                   mean(ven)/area_cbg[j], mean(sab)/area_cbg[j],
-                                   mean(dom)/area_cbg[j]);
+    dev[(tot*7 - 6): (tot*7)] <- c(mean(lun)/area_cbg[i], mean(mar)/area_cbg[i], 
+                                   mean(mer)/area_cbg[i], mean(gio)/area_cbg[i],
+                                   mean(ven)/area_cbg[i], mean(sab)/area_cbg[i],
+                                   mean(dom)/area_cbg[i]);
   }
 }
 
@@ -56,23 +61,31 @@ for(i in 1: n){                 #loop on CBGs
 days <- rep(settimana, times = tot);
 #days <- factor(days);
 
-dev <- rep(0.0, times = n);
-group <- c('work day', 'weekend');
-days <- rep(group, times = n/2);
 
-for (i in seq(1,n,2)){
+
+
+
+
+dev <- rep(0.0, times = 2*n);
+group <- c('work day', 'weekend');
+days <- rep(group, times = n);
+k=1
+for (i in seq(1,n)){
   j <- match(area[i],CensusBlockGroup);
   tot = c(stops_by_day[[i]][seq(1,30,7)], stops_by_day[[i]][seq(2,30,7)],
           stops_by_day[[i]][seq(3,30,7)], stops_by_day[[i]][seq(4,30,7)],
           stops_by_day[[i]][seq(5,30,7)]);
-  dev[i] = mean(tot)/area_cbg[i];
+  
+  dev[k] = mean(tot)/area_cbg[i];
+  k=k+1
   tot <- c(stops_by_day[[i]][seq(6,30,7)], stops_by_day[[i]][seq(7,30,7)]);
-  dev[i+1] <- mean(tot)/area_cbg[j];
+  dev[k] <- mean(tot)/area_cbg[i];
+  k=k+1
   
 }
 
 remove <- which(dev > 3*10^4)
-plot(dev, xlim=c(0,1100))
+plot(dev)
 abline(h=3*10^4)
 par(new=TRUE)
 points(remove,dev[remove], col ='red',xlim=c(0,2300))
@@ -83,7 +96,7 @@ points(remove,dev[remove], col ='red',xlim=c(0,2300))
 dev<-dev[-remove]
 days<-days[-remove]
 
-plot(dev, xlim=c(0,1100), col=(factor(days)))
+plot(dev, col=(factor(days)))
 
 
 x11()
@@ -128,4 +141,50 @@ bartlett.test(dev, days)
 # p-value < 2.2e-16... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
 
 fit <- aov(dev ~ days)
-summary(fit) # 0.495
+summary(fit) 
+
+
+
+#------------------------------------------ 
+# permutation test
+
+# Permutation test:
+# Test statistic: F stat
+T0 <- summary(fit)[[1]][1,4] #f value dell'anova
+T0
+
+# what happens if we permute the data?
+permutazione <- sample(1:2175)
+dev_perm <- dev[permutazione]
+fit_perm <- aov(dev_perm ~ days)
+summary(fit_perm)
+
+plot(factor(days), dev_perm, xlab='treat',col=rainbow(2),main='Permuted Data')
+
+
+# CMC to estimate the p-value
+B <- 10000 # Number of permutations
+T_stat <- numeric(B) 
+n <- dim(dev_perm)[1]
+
+for(perm in 1:B){
+  # Permutation:
+  permutazione <- sample(1:2175)
+  dev_perm <- dev[permutazione]
+  fit_perm <- aov(dev_perm ~ days)
+  
+  # Test statistic:
+  T_stat[perm] <- summary(fit_perm)[[1]][1,4]
+}
+
+layout(1)
+hist(T_stat)
+abline(v=T0,col=3,lwd=2)
+
+plot(ecdf(T_stat))
+abline(v=T0,col=3,lwd=4)
+
+# p-value
+p_val <- sum(T_stat>=T0)/B
+p_val
+# we reject the null hypothesis
