@@ -235,7 +235,7 @@ summary(fit)
 
 #dha = device home area
 dev <- rep(0.0, times = n*2);
-group <- c('', 'weekend');
+group <- c('work day', 'weekend');
 days <- rep(group, times = n);
 
 for (i in 1:n){
