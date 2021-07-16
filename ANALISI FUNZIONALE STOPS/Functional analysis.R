@@ -100,9 +100,9 @@ CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
 attach(New_York_County_no_river)
 
-stops<-matrix(nrow = 1090, ncol=30)
+stops<-matrix(nrow = 1089, ncol=30)
 
-for (i in 1:1090) {
+for (i in 1:1089) {
     stops[i,]<-stops_by_day[[i]]
 }
 
@@ -157,7 +157,7 @@ coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
 
 x11()
 plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
-outliers<-c(346,358)
+outliers<-c(346,358) #non da togliere, sono quelli che hanno un comportamento molto netto
 points(coord.x_long[outliers],coord.y_lat[outliers], cex=2, col='red')
 
 
