@@ -5,6 +5,9 @@ library(sf)
 
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+#terri
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 
 New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
 CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
@@ -138,8 +141,8 @@ plot(Var, ylim = c(0, max(Var)))
 # H0: sigma.1 = sigma.2 = sigma.3 = sigma.4 = sigma.5 = sigma.6 
 # H1: there exist i,j s.t. sigma.i!=sigma.j
 bartlett.test(dev, days)
-# p-value < 2.2e-16... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
-
+# p-value < 2.2e-16 senza outliers... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
+# pvalue 0.482 con outliers
 fit <- aov(dev ~ days)
 summary(fit) 
 

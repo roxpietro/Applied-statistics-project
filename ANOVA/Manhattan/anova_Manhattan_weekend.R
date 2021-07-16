@@ -1,17 +1,19 @@
 # Set Working Directory
-setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/anova")
+setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANOVA/Manhattan")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/LAB_5/mcshapiro.test.RData")
 
 # Load Dataset
-load("~/Documenti/UNIVERSITA/STAT APP/progetto/New York County.RData")
-load("~/Documenti/UNIVERSITA/STAT APP/progetto/Cyber.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
-attach(sub_patt)
-attach(census_blocks_ny)
+attach(CBG_ny_no_river)
+attach(New_York_County_no_river)
 
 library(RColorBrewer)
 
-n <- dim(sub_patt)[1];
+n <- dim(New_York_County_no_river)[1];
 g1 <- length(day_counts[[1]]);
 coldays <- brewer.pal(n = g1, name = 'Set2');
 
@@ -26,7 +28,7 @@ dev <- rep(0.0, times = n*2);
 group <- c('weekday', 'weekend');
 days <- rep(group, times = n);
 
-for (i in 1:n){
+for (i in seq(1,n,2)){
   #j <- match(area[i],CensusBlockGroup);
   tot = c(stops_by_day[[i]][seq(1,30,7)], stops_by_day[[i]][seq(2,30,7)],
           stops_by_day[[i]][seq(3,30,7)], stops_by_day[[i]][seq(4,30,7)],
@@ -59,25 +61,25 @@ dev.off()
 Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
-# 4.482263e-58 4.821560e-51
+# 6.815282e-46 3.155112e-42
 # ?! come possibile venga così basso ... cmq direi non gaussiane
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
-Var
+Var #10342.040  4781.232
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
 # H0: sigma.1 = sigma.2 = sigma.3 = sigma.4 = sigma.5 = sigma.6 
 # H1: there exist i,j s.t. sigma.i!=sigma.j
 bartlett.test(dev, days)
-#PVALUE BASSO BASSO ... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
+#PVALUE BASSO BASSO p-value = 2.2e-16.. QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
 #vero che hanno diversi numeri di elementi i gruppi 
 
 fit <- aov(dev ~ days)
 summary(fit)
-# result p-value 0.431 -> not have enough evidence to refuse H0 -> same stops mean
+# result p-value  0.000435 ***-> not have enough evidence to refuse H0 -> same stops mean
 
 #_______________________________________________________________________________
 #2 - anova weekday_device_home_areas vs weekend_device_home_areas summed
@@ -89,7 +91,7 @@ dev <- rep(0.0, times = n*2);
 group <- c('weekday', 'weekend');
 days <- rep(group, times = n);
 
-for (i in 1:n){
+for (i in seq(1,n,2)){
   #j <- match(area[i],CensusBlockGroup);
   dev[2*i -1] <- sum(weekday_device_home_areas[[i]]);
   dev[2*i] <- sum(weekend_device_home_areas[[i]]);
@@ -115,12 +117,12 @@ dev.off()
 Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
-# 2.837032e-56 2.685911e-57
+# 9.230507e-44 1.160269e-42
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
-Var
+Var #238185.67  37182.91
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
@@ -139,9 +141,9 @@ summary(fit)
 
 library(geosphere)
 
-area_cbg=matrix(nrow = 1, ncol = 15463)
-for (i in 1:15463) {
-  coords=census_blocks_ny$geometry[[i]][[1]][[1]]
+area_cbg=matrix(nrow = 1, ncol = n)
+for (i in 1:n) {
+  coords=CBG_ny_no_river$geometry[[i]][[1]][[1]]
   area_cbg[i]=areaPolygon(coords);
 }
 
@@ -153,14 +155,13 @@ dev <- rep(0.0, times = n*2);
 group <- c('weekday', 'weekend');
 days <- rep(group, times = n);
 
-for (i in 1:n){
-  j <- match(area[i],CensusBlockGroup);
+for (i in seq(1,n,2)){
   tot = c(stops_by_day[[i]][seq(1,30,7)], stops_by_day[[i]][seq(2,30,7)],
           stops_by_day[[i]][seq(3,30,7)], stops_by_day[[i]][seq(4,30,7)],
           stops_by_day[[i]][seq(5,30,7)]);
-  dev[i] = mean(tot)/area_cbg[j];
+  dev[i] = mean(tot)/area_cbg[i];
   tot <- c(stops_by_day[[i]][seq(6,30,7)], stops_by_day[[i]][seq(7,30,7)]);
-  dev[i+1] <- mean(tot)/area_cbg[j];
+  dev[i+1] <- mean(tot)/area_cbg[i];
   
 }
 # x11()
@@ -186,27 +187,26 @@ dev.off()
 Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
-#7.467253e-52 1.775820e-60
+#4.853195e-59 5.432627e-59
 # ?! come possibile venga così basso ... cmq direi non gaussiane
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
-Var
+Var #1023478894  516823433
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
 # H0: sigma.1 = sigma.2 = sigma.3 = sigma.4 = sigma.5 = sigma.6 
 # H1: there exist i,j s.t. sigma.i!=sigma.j
 bartlett.test(dev, days)
-# p-value < 2.2e-16
+# p-value = < 2.2e-16
 #PVALUE BASSO BASSO ... QUINDI SIGMA diverse ... anche dal plot si vede tanto è un pb
 #vero che hanno diversi numeri di elementi i gruppi 
 
 fit <- aov(dev ~ days)
 summary(fit)
-# result p-value 0.39 -> not have enough evidence to refuse H0 -> same stops mean
-# strano che sono più alti visivamente quelli del weekend
+# result p-value 0.639 -> refuse H0 0.639
 
 #_______________________________________________________________________________
 #2 - anova weekday_device_home_areas vs weekend_device_home_areas summed
@@ -244,12 +244,12 @@ dev.off()
 Ps <- c(shapiro.test(dev[ days==group[1] ])$p,
         shapiro.test(dev[ days==group[2] ])$p)
 Ps        
-#  1.944004e-60 2.085112e-60
+#  4.689057e-59 4.986713e-59
 
 # 2) same covariance structure (= same sigma^2)
 Var <- c(var(dev[ days==group[1] ]),
          var(dev[ days==group[2] ]));
-Var
+Var # 31984008762  4549961047
 x11()
 plot(Var, ylim = c(0, max(Var)))         
 # test of homogeneity of variances
@@ -260,7 +260,8 @@ bartlett.test(dev, days)
 
 fit <- aov(dev ~ days)
 summary(fit)
-# 0.036 * -> refuse H0: different mean
+#  0.0365 * -> refuse H0: different mean
 
 
-detach(sub_patt)
+detach(New_York_County_no_river)
+detach(CBG_ny_no_river)
