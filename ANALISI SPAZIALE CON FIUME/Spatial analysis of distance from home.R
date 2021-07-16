@@ -45,7 +45,7 @@ max(distance_from_home)
 x11()
 png(file = "glop distance from home.png")
 ggplot() + 
-  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance_from_home[-rem]))+scale_fill_gradient(low="lightyellow", high="red") +
+  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance__from_home))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_ny_no_river$geometry[rem,], fill="black")+
   geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="yellow") +
   geom_sf(data = CBG_RIVER$geometry, fill="lightblue")
@@ -182,7 +182,7 @@ vbc.fit.nomax
 
 #--------------------------------
 # ## DUMMY per il sud ma mh perdo la variabilità + con picchi
-# sud <- c(which(CBG_ny_no_river$TractCode<="013900"), 
+# sud <- c(which(CBG_ny_no_river$TractCode<="013900"),
 #          which(CBG_ny_no_river$TractCode=='031900'),
 #          which(CBG_ny_no_river$TractCode=='031704'),
 #          which(CBG_ny_no_river$TractCode=='031703'),
@@ -240,12 +240,10 @@ curve(v.f.est(x, C0=vlog.fit[2,2]+vlog.fit[1,2], cov.pars=rbind(c(vlog.fit[2,2],
       main = "Variogram model",add=TRUE,col='red',lwd=2)
 
 points(vlog.nomax$dist,vlog.nomax$gamma,xlab='distance',ylab='semivariance',pch=19,col='steelblue')
-curve(v.f.est(x, C0=vlog.fit.nomax[2,2]+vlog.fit.nomax[1,2], 
+curve(v.f.est(x, C0=vlog.fit.nomax[2,2]+vlog.fit.nomax[1,2],
               cov.pars=rbind(c(vlog.fit.nomax[2,2], vlog.fit.nomax[2,3]),c(vlog.fit.nomax[1,2], vlog.fit.nomax[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 6000,
       xlab = "distance", ylab = expression(gamma(h)),
       main = "Variogram model",add=TRUE,col='steelblue',lwd=2)
 
 dev.off()
 # scegliamo il modello non stazionario!
-
-
