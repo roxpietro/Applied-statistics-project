@@ -43,7 +43,7 @@ max(distance_from_home)
 # data_spatial <-data.frame(coord.x,coord.y, z)
 # coordinates(data_spatial)<-c('coord.x', 'coord.y')
 x11()
-png(file = "glop distance from home")
+png(file = "glop distance from home.png")
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance_from_home[-rem]))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_ny_no_river$geometry[rem,], fill="black")+
@@ -89,6 +89,7 @@ v.slog <- variogram(log(distance_from_home) ~ 1, data = data_spatial,boundaries 
 fit1=fit.variogram(v.slog, vgm(0.4, model='Exp', 5000, nugget=0.2))
 x11()
 plot(v.slog, fit1, pch = 3)
+fit1
 
 v.sbc <- variogram(bc.distance_from_home ~ 1, data = data_spatial,boundaries = c(0,200,seq(400,6000,450)))
 fit1=fit.variogram(v.sbc, vgm(0.4, model='Exp', 5000, nugget=0.2))
@@ -177,7 +178,7 @@ x11()
 png(file="variogram bc dfh nomax.png")
 plot(vbc.nomax, vbc.fit.nomax, pch = 3)
 dev.off()
-vlog.fit.nomax
+vbc.fit.nomax
 
 #--------------------------------
 # ## DUMMY per il sud ma mh perdo la variabilità + con picchi
@@ -214,6 +215,17 @@ vlog.fit.nomax
 # x11()
 # plot(vbc, vbc.fit, pch = 3)
 # vlog.fit
+
+# alpha check ------------------------------------------------------------------
+plot(variogram(log(distance_from_home) ~ f_distance, data_spatial, alpha = c(0, 45, 90, 135)),pch=19)
+
+plot(variogram(bc.distance_from_home ~ f_distance, data_spatial, alpha = c(0, 45, 90, 135)),pch=19)
+plot(variogram(bc.distance_from_home ~ f_distance, data_spatial, alpha = c(0, 45)),pch=19)
+
+plot(variogram(log(dist_from_home) ~ f_dist, data_spat, alpha = c(0, 45, 90, 135)),pch=19)
+plot(variogram(bc.dist_from_home ~ f_dist, data_spat, alpha = c(0, 45, 90, 135)),pch=19)
+
+plot(variogram(bc.dist_from_home ~ f_dist, data_spat, alpha = c(45,135)),pch=19)
 
 #--------------------------------------------
 setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANALISI SPAZIALE CON FIUME/presentazione spatial")
