@@ -2,6 +2,9 @@
 setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANOVA/Manhattan")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/LAB_5/mcshapiro.test.RData")
 
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+
 # Load Dataset
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
@@ -47,6 +50,7 @@ for(i in 1:3){
 
 CBG_ny_no_river$CensusBlockGroup[floor(rem/5)]
 #remove possible "outliers"
+remove<-c()
 for (i in 1:length(k))
   remove <- c(remove,(5*k[i]):(5*k[i]+4))
 dev<- dev[-remove]
@@ -56,13 +60,13 @@ png(file = "Manhattan boxplot food hours.png")
 boxplot( dev ~ days, main = "food hours")
 dev.off()
 
-#x11()
-png(file = "Manhattan barplot food hours.png")
+x11()
+#png(file = "Manhattan barplot food hours.png")
 par(mfrow=c(1,2), las = 2)
 barplot(rep(mean(dev),2), names.arg=levels(days),
-        las=2, col='grey85', main='Model under H0 - food hours') # ylim=c(0,max(dev))
+        las=2, col='grey85', main='Model under H0') # ylim=c(0,max(dev))
 barplot(tapply(dev, days, mean), names.arg=levels(days),
-        las=2, col=col_food_hours,main='Model under H1 - food hours') #, ylim=c(0,max(dev))
+        las=2, col=col_food_hours,main='Model under H1') #, ylim=c(0,max(dev))
 
 dev.off()
 ### verify the assumptions:
@@ -95,10 +99,61 @@ bartlett.test(dev, days)
 fit <- aov(dev~days)
 summary(fit)
 # p-value <2e-16 ***: H0 refused -> different mean (sia con che senza outliers)
+
+
+
+# permutation test
+
+# Permutation test:
+# Test statistic: F stat
+T0 <- summary(fit)[[1]][1,4] #f value dell'anova
+T0
+
+# what happens if we permute the data?
+permutazione <- sample(1:length(dev))
+dev_perm <- dev[permutazione]
+fit_perm <- aov(dev_perm ~ days)
+summary(fit_perm)
+
+plot(factor(days), dev_perm, xlab='treat',col=rainbow(2),main='Permuted Data')
+
+
+# CMC to estimate the p-value
+B <- 10000 # Number of permutations
+T_stat <- numeric(B) 
+n <- dim(dev_perm)[1]
+
+for(perm in 1:B){
+  # Permutation:
+  permutazione <- sample(1:length(dev))
+  dev_perm <- dev[permutazione]
+  fit_perm <- aov(dev_perm ~ days)
+  
+  # Test statistic:
+  T_stat[perm] <- summary(fit_perm)[[1]][1,4]
+}
+
+layout(1)
+hist(T_stat)
+abline(v=T0,col=3,lwd=2)
+
+plot(ecdf(T_stat))
+abline(v=T0,col=3,lwd=4)
+
+# p-value
+p_val <- sum(T_stat>=T0)/B
+p_val
+# we reject the null hypothesis
+
+
+
 #______________________________________________________________________________
 #   WITH DENSITY
 # Calcolo aree per calcolo density
 
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+n=dim(New_York_County_no_river)[1]
 library(geosphere)
 
 area_cbg=matrix(nrow = 1, ncol = n)
@@ -137,18 +192,18 @@ for (i in 1:length(k))
   remove <- c(remove,(5*k[i]):(5*k[i]+4))
 dev<- dev[-remove]
 days <- days[-remove]
-#x11()
-png(file = "Manhattan boxplot density food hours.png")
+x11()
+#png(file = "Manhattan boxplot density food hours.png")
 boxplot( dev ~ days, main = "density food hours")
 dev.off()
 
-#x11()
-png(file = "Manhattan barplot density food hours.png")
+x11()
+#png(file = "Manhattan barplot density food hours.png")
 par(mfrow=c(1,2), las = 2)
 barplot(rep(mean(dev),2), names.arg=levels(days),
-        las=2, col='grey85', main='Model under H0 - density food hours') # ylim=c(0,max(dev))
+        las=2, col='grey85', main='Model under H0') # ylim=c(0,max(dev))
 barplot(tapply(dev, days, mean), names.arg=levels(days),
-        las=2, col=col_food_hours,main='Model under H1 - density food hours') #, ylim=c(0,max(dev))
+        las=2, col=col_food_hours,main='Model under H1') #, ylim=c(0,max(dev))
 
 dev.off()
 ### verify the assumptions:
@@ -186,3 +241,46 @@ summary(fit)
 # 2.22e-10 *** senza outliers
 detach(New_York_County_no_river);
 detach(CBG_ny_no_river)
+
+# permutation test
+
+# Permutation test:
+# Test statistic: F stat
+T0 <- summary(fit)[[1]][1,4] #f value dell'anova
+T0
+
+# what happens if we permute the data?
+permutazione <- sample(1:length(dev))
+dev_perm <- dev[permutazione]
+fit_perm <- aov(dev_perm ~ days)
+summary(fit_perm)
+
+plot(factor(days), dev_perm, xlab='treat',col=rainbow(2),main='Permuted Data')
+
+
+# CMC to estimate the p-value
+B <- 10000 # Number of permutations
+T_stat <- numeric(B) 
+n <- dim(dev_perm)[1]
+
+for(perm in 1:B){
+  # Permutation:
+  permutazione <- sample(1:length(dev))
+  dev_perm <- dev[permutazione]
+  fit_perm <- aov(dev_perm ~ days)
+  
+  # Test statistic:
+  T_stat[perm] <- summary(fit_perm)[[1]][1,4]
+}
+
+layout(1)
+hist(T_stat)
+abline(v=T0,col=3,lwd=2)
+
+plot(ecdf(T_stat))
+abline(v=T0,col=3,lwd=4)
+
+# p-value
+p_val <- sum(T_stat>=T0)/B
+p_val
+# we reject the null hypothesis
