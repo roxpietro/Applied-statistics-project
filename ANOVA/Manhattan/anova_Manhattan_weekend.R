@@ -18,14 +18,14 @@ g1 <- length(day_counts[[1]]);
 coldays <- brewer.pal(n = g1, name = 'Set2');
 
 #NO density
-#first analysis: 1- (like before) group stops_by_day in weekday vs weekend
-#                2- weekday_device_home_area vs weekend_device_home_areas summed
+#first analysis: 1- (like before) group stops_by_day in  vs weekend
+#                2- _device_home_area vs weekend_device_home_areas summed
 
 #_______________________________________________________________________________
 #1 - grouped all Manhattan (NY County ) CBGs MEAN n.of devices in 
-#weekdays(work days) (Mon-Fri) and weekend days(Sat-Sun) vectors
+#s(work days) (Mon-Fri) and weekend days(Sat-Sun) vectors
 dev <- rep(0.0, times = n*2);
-group <- c('weekday', 'weekend');
+group <- c('work day', 'weekend');
 days <- rep(group, times = n);
 
 for (i in seq(1,n,2)){
@@ -40,7 +40,7 @@ for (i in seq(1,n,2)){
 }
 # x11()
 png(file = "Manhattan boxplot with stops_by_day.png")
-boxplot( dev ~ days, main = "weekdays vs weekend")
+boxplot( dev ~ days, main = "workdays vs weekend")
 dev.off()
 
 #qua infatti le medie confrontando le densità sembrano differenti
@@ -82,13 +82,13 @@ summary(fit)
 # result p-value  0.000435 ***-> not have enough evidence to refuse H0 -> same stops mean
 
 #_______________________________________________________________________________
-#2 - anova weekday_device_home_areas vs weekend_device_home_areas summed
-# test H0 mean(sum(weekday_dha)) = mean(sum(weekend_dha))
-# so group visitors from different home according to weekday vs weekend
+#2 - anova _device_home_areas vs weekend_device_home_areas summed
+# test H0 mean(sum(workday_dha)) = mean(sum(weekend_dha))
+# so group visitors from different home according to  vs weekend
 
 #dha = device home area
 dev <- rep(0.0, times = n*2);
-group <- c('weekday', 'weekend');
+group <- c('workday', 'weekend');
 days <- rep(group, times = n);
 
 for (i in 1:n){
@@ -117,7 +117,7 @@ days <- days[-remove]
 
 # x11()
 png(file = "Manhattan boxplot with dha.png")
-boxplot( dev ~ days, main = "weekdays vs weekend")
+boxplot( dev ~ days, main = "workdays vs weekend")
 dev.off()
 
 #x11()
@@ -170,9 +170,9 @@ for (i in 1:n) {
 area_cbg=area_cbg/10^6;
 #______________________________________________________________________________
 #1 - grouped all Manhattan (NY County ) CBGs MEAN n.of devices in 
-#weekdays(work days) (Mon-Fri) and weekend days(Sat-Sun) vectors
+#workdays(work days) (Mon-Fri) and weekend days(Sat-Sun) vectors
 dev <- rep(0.0, times = n*2);
-group <- c('weekday', 'weekend');
+group <- c('workday', 'weekend');
 days <- rep(group, times = n);
 
 for (i in seq(1,n,2)){
@@ -186,7 +186,7 @@ for (i in seq(1,n,2)){
 }
 # x11()
 png(file = "Manhattan boxplot with density stops_by_day.png")
-boxplot( dev ~ days, main = "weekdays vs weekend")
+boxplot( dev ~ days, main = "workdays vs weekend")
 dev.off()
 
 #qua infatti le medie confrontando le densità sembrano differenti
@@ -229,13 +229,13 @@ summary(fit)
 # result p-value 0.639 -> refuse H0 0.639
 
 #_______________________________________________________________________________
-#2 - anova weekday_device_home_areas vs weekend_device_home_areas summed
-# test H0 mean(sum(weekday_dha)) = mean(sum(weekend_dha))
-# so group visitors from different home according to weekday vs weekend
+#2 - anova _device_home_areas vs weekend_device_home_areas summed
+# test H0 mean(sum(_dha)) = mean(sum(weekend_dha))
+# so group visitors from different home according to  vs weekend
 
 #dha = device home area
 dev <- rep(0.0, times = n*2);
-group <- c('weekday', 'weekend');
+group <- c('', 'weekend');
 days <- rep(group, times = n);
 
 for (i in 1:n){
@@ -263,7 +263,7 @@ days <- days[-remove]
 
 # x11()
 png(file = "Manhattan boxplot with density dha.png")
-boxplot( dev ~ days, main = "weekdays vs weekend")
+boxplot( dev ~ days, main = "s vs weekend")
 dev.off()
 
 #x11()
@@ -302,6 +302,50 @@ summary(fit)
 #  0.0365 * -> refuse H0: different mean
 #  <2e-16 *** senza outliers
 
-
 detach(New_York_County_no_river)
 detach(CBG_ny_no_river)
+
+#------------------------------------------ 
+# permutation test
+
+# Permutation test:
+# Test statistic: F stat
+T0 <- summary(fit)[[1]][1,4] #f value dell'anova
+T0
+
+# what happens if we permute the data?
+nn <- length(dev)
+permutazione <- sample(1:nn)
+dev_perm <- dev[permutazione]
+fit_perm <- aov(dev_perm ~ days)
+summary(fit_perm)
+
+plot(factor(days), dev_perm, xlab='treat',col=rainbow(2),main='Permuted Data')
+
+
+# CMC to estimate the p-value
+B <- 10000 # Number of permutations
+T_stat <- numeric(B) 
+n <- dim(dev_perm)[1]
+
+for(perm in 1:B){
+  # Permutation:
+  permutazione <- sample(1:nn)
+  dev_perm <- dev[permutazione]
+  fit_perm <- aov(dev_perm ~ days)
+  
+  # Test statistic:
+  T_stat[perm] <- summary(fit_perm)[[1]][1,4]
+}
+
+layout(1)
+hist(T_stat)
+abline(v=T0,col=3,lwd=2)
+
+plot(ecdf(T_stat))
+abline(v=T0,col=3,lwd=4)
+
+# p-value
+p_val <- sum(T_stat>=T0)/B
+p_val
+# we reject the null hypothesis
