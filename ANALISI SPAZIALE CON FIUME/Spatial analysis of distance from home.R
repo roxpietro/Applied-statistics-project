@@ -15,6 +15,11 @@ load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statist
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+
+
 New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
 CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
@@ -43,7 +48,8 @@ max(distance_from_home)
 # data_spatial <-data.frame(coord.x,coord.y, z)
 # coordinates(data_spatial)<-c('coord.x', 'coord.y')
 x11()
-png(file = "glop distance from home.png")
+distance__from_home <- distance_from_home[-rem]
+#png(file = "glop distance from home.png")
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance__from_home))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_ny_no_river$geometry[rem,], fill="black")+
@@ -78,10 +84,10 @@ bc.distance_from_home <- bcPower(distance_from_home, lambda$lambda)
 hist(bc.distance_from_home, breaks=16, col="grey", main='Histogram of bc dist', prob = TRUE, xlab = 'bc dist from home')
 
 x11()
-png(file = "nuvola log dfh.png")
+#png(file = "nuvola log dfh.png")
 xyplot(log(distance_from_home) ~ sqrt(distance), as.data.frame(data_spatial))
 dev.off()
-png(file = "nuvola box-cox dfh.png")
+#png(file = "nuvola box-cox dfh.png")
 xyplot(bc.distance_from_home ~ sqrt(distance), as.data.frame(data_spatial))
 dev.off()
 # stationary variogram vs ->male
@@ -105,7 +111,7 @@ vlog <- variogram(log(distance_from_home) ~ f_distance, data = data_spatial,boun
 plot(vlog)
 vlog.fit <- fit.variogram(vlog, vgm(0.3, "Exp", 3000, 0.05))
 x11()
-png(file="variogram log dfh.png")
+#png(file="variogram log dfh.png")
 plot(vlog, vlog.fit, pch = 3)
 dev.off()
 vlog.fit
@@ -137,11 +143,11 @@ x11()
 hist(bc.dist_from_home, breaks=16, col="grey", main='Histogram of bc dist', prob = TRUE, xlab = 'bc dist from home')
 
 x11()
-png(file="nuvola log dfh nomax.png")
+#png(file="nuvola log dfh nomax.png")
 xyplot(log(dist_from_home) ~ sqrt(dist), as.data.frame(data_spat))
 dev.off()
 x11()
-png(file="nuvola bc dfh nomax.png")
+#png(file="nuvola bc dfh nomax.png")
 xyplot(bc.dist_from_home ~ sqrt(dist), as.data.frame(data_spat))
 dev.off()
 # stationary variogram vs -> male
@@ -166,7 +172,7 @@ vlog.nomax <- variogram(log(dist_from_home) ~ f_dist, data = data_spat, boundari
 plot(vlog.nomax)
 vlog.fit.nomax <- fit.variogram(vlog.nomax, vgm(0.3, "Exp", 3000, 0.05))
 x11()
-png(file="variogram log dfh nomax.png")
+#png(file="variogram log dfh nomax.png")
 plot(vlog.nomax, vlog.fit.nomax, pch = 3)
 dev.off()
 vlog.fit.nomax
