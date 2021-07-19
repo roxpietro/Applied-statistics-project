@@ -164,14 +164,6 @@ par(mfcol = c(2,1))
 for(i in 1:2) barplot(las=2,load.tour[,i], ylim = c(-1, 1), main=paste("PC",i))
 #since we want to do dimensionality reduction, we consider only the first 2/3 directions
 
-# Interpretation of the loadings:
-# First PCs: weighted average of the number of nights in 3,4 stars hotel and residences. it gives different means
-# Second PCs: contrast between the number of nights in 3 and 4 stars hotel. the two weights have different sign->contrast
-# Third PC: residences
-
-# The loadings reflect the previous observation: the first 3 PCs are 
-# driven by the variables displaying the highest variability
-
 # Explained variance
 x11()
 par(mfrow=c(1,2))
@@ -183,12 +175,6 @@ abline(h=0.8, lty=2, col='blue')
 box()
 axis(2,at=0:10/10,labels=0:10/10)
 axis(1,at=1:ncol(data),labels=1:ncol(data),las=2)
-#barplot1 -> variances of the original dataset
-#barplot -> variances of the first pc
-
-# The first PC explains more than 98% of the total variability. 
-# This is due to the masking effect of those 3 variables over the others
-
 
 #------------- SCATTERPLOT ---------------------
 
