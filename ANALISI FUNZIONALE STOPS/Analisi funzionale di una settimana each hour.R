@@ -12,6 +12,7 @@ load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics
 # Build dataset 
 
 New_York_County_no_river= New_York_County_no_river[order( New_York_County_no_river$area),]
+CBG_ny_no_river<-CBG_ny_no_river[order( CBG_ny_no_river$CensusBlockGroup),]
 attach( New_York_County_no_river)
 
 stops<-matrix(nrow = 1092, ncol=30*24)
@@ -27,22 +28,7 @@ stops<-stops[,505:672]
 stops<-t(stops)
 colnames(stops)<- New_York_County_no_river$area
 x11()
-matplot(stops,type='l')
-
-
-abscissa<-1:168
-Xobs0<-stops
-# generalized cross-validation
-nbasis <- 15:100
-gcv <- matrix(nrow = length(nbasis), ncol = 1092)
-for (i in 1:length(nbasis)){
-  basis <- create.fourier.basis(rangeval=c(1,168),nbasis=nbasis[i]) # creates a fourier basis
-  gcv[i,] <- smooth.basis(abscissa, Xobs0, basis)$gcv
-}
-par(mfrow=c(1,1))
-plot(nbasis,gcv)
-nbasis[which.min(gcv[,300])]
-
+matplot(stops,type='l', main = "22/06 - 28/06")
 
 
 
@@ -79,6 +65,26 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 par(mfrow=c(1,3))
 plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALSE)
 
+x11()
+par(mfrow=c(1,2))
+media <- mean.fd(data_W.fd.1)
+
+plot(media,lwd=2,ylim=c(-15,33),ylab='Stops by each hour',main='FPC1')
+lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
+lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
+abline(v=seq(1,168, by=24), lty=2)
+title('FPC1')
+
+plot(media,lwd=2,ylim=c(-2,20),lab='Stops by each hour',main='FPC2')
+lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
+lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
+abline(v=seq(1,168, by=24), lty=2)
+title('FPC2')
+
+# PC2 -> contrasto tra weekend e weekday
+# PC1 -> media
+
+
 # scatter plot of the scores
 par(mfrow=c(1,2))
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
@@ -104,24 +110,15 @@ lines(stops[,532],lwd=4, col=1)
 
 # togliamo questi outliers
 stops<-stops[,-out]
-matplot(stops,type='l')
 
+
+x11()
+matplot(stops,type='l',main = "22/06 - 28/06")
 
 abscissa<-1:168
 Xobs0<-stops
-# generalized cross-validation
-nbasis <- 15:100
-gcv <- matrix(nrow = length(nbasis), ncol = 1090)
-for (i in 1:length(nbasis)){
-  basis <- create.fourier.basis(rangeval=c(1,168),nbasis=nbasis[i]) # creates a fourier basis
-  gcv[i,] <- smooth.basis(abscissa, Xobs0, basis)$gcv
-}
-par(mfrow=c(1,1))
-plot(nbasis,gcv)
-nbasis[which.min(gcv[,300])]
 
-
-nbasis <- 50 # number of basis
+nbasis <- 80 # number of basis
 
 # Create the basis
 #FOURIER
@@ -153,18 +150,21 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 
 x11()
 media <- mean.fd(data_W.fd.1)
+par(mfrow=c(2,1))
+plot(media,lwd=2,ylim=c(-25,31),ylab='Stops by each our ~ 22/06 - 28/06',main='FPC1')
+lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
+lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
+abline(v=seq(1,168, by=24), lty=2, lwd=3)
+abline(v=seq(1,168, by=6), lty=3)
+title("FPC1")
 
-plot(media,lwd=2,ylim=c(-25,20),ylab='temperature',main='FPC1')
-lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
-lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
-abline(v=seq(1,168, by=24))
+plot(media,lwd=2,ylim=c(-2,17),ylab='Stops by each our ~ 22/06 - 28/06',main='FPC2')
+lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
+lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
+abline(v=seq(1,168, by=24), lty=2, lwd=3)
+abline(v=seq(1,168, by=6), lty=3)
+title("FPC2")
 
-
-plot(media,lwd=2,ylim=c(-20,20),ylab='temperature',main='FPC2')
-lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
-lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
-abline(v=seq(1,168, by=24))
-# temperate climate or not
 
 
 

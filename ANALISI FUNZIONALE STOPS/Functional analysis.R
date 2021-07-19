@@ -4,28 +4,40 @@
 
 
 library(fda)
+library(ggplot2)
+library(geosphere)
+library(sf)
+library(sp)           ## Data management
+library(lattice)      ## Data management
+library(geoR)         ## Geostatistics
+library(gstat)        ## Geostatistics
+library(raster)
+library(rgdal)
 
 # fra
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/Data frame county/New York County.RData") # FRA
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
 load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+
 #--------------------------------------------------------------------
 # Build dataset 
 
-New_York_County=New_York_County[order(New_York_County$area),]
-attach(New_York_County)
+New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
+attach(New_York_County_no_river)
 
-stops<-matrix(nrow = 1168, ncol=30)
+stops<-matrix(nrow = 1092, ncol=30)
 
-for (i in 1:dim(New_York_County)[1]) {
+for (i in 1:dim(New_York_County_no_river)[1]) {
   stops[i,]<-stops_by_day[[i]]
 }
 
-detach(New_York_County)
+detach(New_York_County_no_river)
 
 stops<-t(stops)
-colnames(stops)<-New_York_County$area
-matplot(stops,type='l')
+colnames(stops)<-New_York_County_no_river$area
+x11()
+matplot(stops,type='l' , main = "Stops by day")
 
 
 #B-SPLINES
@@ -38,7 +50,8 @@ basis <- create.bspline.basis(rangeval=c(1,30), nbasis=nbasis, norder=m)
 
 time=1:30
 data_W.fd.1 <- Data2fd(y = stops,argvals = time,basisobj = basis) #SMOOTHING
-plot.fd(data_W.fd.1)
+x11()
+plot.fd(data_W.fd.1, main ="Smoothing stops by day")
 
 
 # FPCA
@@ -67,58 +80,44 @@ plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2"
 
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
-text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
-     ylab="Scores FPC2")
+     ylab="Scores FPC2", main="Scatterplot")
 text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 
 
 # outliers
-out=c(566,106,1157)
-cbg_out=New_York_County[out,1]
+out=c(92,532)
+cbg_out=New_York_County_no_river[out,1]
 layout(1)
 x11()
-matplot(stops,type='l')
-lines(stops[,566],lwd=4, col=2) 
-lines(stops[,106],lwd=4, col=1) 
-lines(stops[,1157],lwd=4, col=3) 
+matplot(stops,type='l', main= "Stops by day - outliers")
+lines(stops[,92],lwd=4, col=2) 
+lines(stops[,532],lwd=4, col=1) 
+ 
+x11()
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill="cornsilk")+
+  geom_sf(data = CBG_ny_no_river$geometry[out], fill="chartreuse")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  ggtitle("Influential Points")
 
 # togliamo questi outliers
 stops<-stops[,-out]
-matplot(stops,type='l')
 
-# dal matplot vediamo che ci sono due comportamenti diversi, proviamo a togliere il fiume..
-#...non cambia molto, significa che dobbiamo capire la discriminante
-
-New_York_County_no_river<-New_York_County_no_river[-which(New_York_County_no_river$area %in% cbg_out),]
-CBG_ny_no_river<-CBG_ny_no_river[-which(CBG_ny_no_river$CensusBlockGroup %in% cbg_out),]
-
-New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
-CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
-
-
-attach(New_York_County_no_river)
-
-stops<-matrix(nrow = 1089, ncol=30)
-
-for (i in 1:1089) {
-    stops[i,]<-stops_by_day[[i]]
-}
-
-detach(New_York_County_no_river)
-
-stops<-t(stops)
 x11()
-matplot(stops,type='l')
+matplot(stops,type='l', main = "Stops by Day")
 
+abscissa<-1:30
+Xobs0<-stops
 
 nbasis <- 22
 basis <- create.fourier.basis(rangeval=c(1,30),nbasis=nbasis) # creates a fourier basis
 
 time=1:30
 data_W.fd.1 <- Data2fd(y = stops,argvals = time,basisobj = basis) #SMOOTHING
-plot.fd(data_W.fd.1, ylim = c(0,2000))
+plot.fd(data_W.fd.1)
 
 
 
@@ -141,38 +140,55 @@ plot(pca_W.1$harmonics[3,],col=2,ylab='FPC3')
 par(mfrow=c(1,3))
 plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALSE)
 
+
+x11()
+media <- mean.fd(data_W.fd.1)
+par(mfrow=c(1,2))
+plot(media,lwd=2,ylim=c(-20,300),ylab='Stops by day',main='FPC1')
+lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
+lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
+abline(v=seq(1,30, by=7),lty=2)
+title("FPC1")
+
+plot(media,lwd=2,ylim=c(0,170),ylab='Stops by day',main='FPC2')
+lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
+lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
+abline(v=seq(1,30, by=7), lty=2)
+title("FPC2")
+# temperate climate or not
+
+
 # scatter plot of the scores
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
-text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County_no_river$area, cex=1)
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
 text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 
-centroids_NY <- st_centroid(CBG_ny_no_river$geometry, of_largest_polygon = FALSE)
-coord_NY <- as.numeric(unlist(centroids_NY))
-coord.x_long <- coord_NY[seq(1,length(coord_NY),by=2)]
-coord.y_lat <- coord_NY[seq(2,length(coord_NY),by=2)]
+
+influential<- which(abs(pca_W.1$scores[,2])>500)
 
 x11()
-plot(coord.x_long,coord.y_lat,xlab="longitude",ylab="latitude",lwd=2)
-outliers<-c(346,358) #non da togliere, sono quelli che hanno un comportamento molto netto
-points(coord.x_long[outliers],coord.y_lat[outliers], cex=2, col='red')
-
-
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill="cornsilk")+
+  geom_sf(data = CBG_ny_no_river$geometry[out], fill="chartreuse")+
+  geom_sf(data = CBG_ny_no_river$geometry[influential], fill="red")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  ggtitle("Influential Points")
 
 
 #................................................................................
 # proviamo a prendere quelli con stops>250
 
-New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
-attach(New_York_County_no_river)
+New_York_County_no_river_no_river=New_York_County_no_river_no_river[order(New_York_County_no_river_no_river$area),]
+attach(New_York_County_no_river_no_river)
 
 stops<-matrix(ncol=30, nrow = 124)
 k=1
 index<-c()
-for (i in 1:dim(New_York_County_no_river)[1]) {
+for (i in 1:dim(New_York_County_no_river_no_river)[1]) {
   if (max(stops_by_day[[i]])>250) {
   stops[k,]<-stops_by_day[[i]]
   index[k]<-i
@@ -180,7 +196,7 @@ for (i in 1:dim(New_York_County_no_river)[1]) {
   }
 }
 
-detach(New_York_County_no_river)
+detach(New_York_County_no_river_no_river)
 CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
 ggplot() + 
@@ -236,7 +252,7 @@ plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2"
 
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
-text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County_no_river$area, cex=1)
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
@@ -245,7 +261,7 @@ text(pca_W.1$scores[,1],pca_W.1$scores[,2], cex=1)
 
 # outliers
 out=c(19,75)
-cbg_out=New_York_County[out,1]
+cbg_out=New_York_County_no_river[out,1]
 layout(1)
 x11()
 matplot(stops,type='l')
@@ -313,7 +329,7 @@ abline(v=seq(1,30, by=7))
 # scatter plot of the scores
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2",lwd=2)
-text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County_no_river$area, cex=1)
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
@@ -328,13 +344,13 @@ lines(stops[,3],lwd=4, col=1)
 #--------------------------------------------------------------------
 # proviamo a prendere quelli con stops<250
 
-New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
-attach(New_York_County_no_river)
+New_York_County_no_river_no_river=New_York_County_no_river_no_river[order(New_York_County_no_river_no_river$area),]
+attach(New_York_County_no_river_no_river)
 
 stops<-matrix(ncol=30, nrow = 964)
 k=1
 index<-c()
-for (i in 1:dim(New_York_County_no_river)[1]) {
+for (i in 1:dim(New_York_County_no_river_no_river)[1]) {
   if (max(stops_by_day[[i]])<250) {
     stops[k,]<-stops_by_day[[i]]
     index[k]<-i
@@ -342,7 +358,7 @@ for (i in 1:dim(New_York_County_no_river)[1]) {
   }
 }
 
-detach(New_York_County_no_river)
+detach(New_York_County_no_river_no_river)
 CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
 ggplot() + 
@@ -401,7 +417,7 @@ plot(pca_W.1$scores[,1],pca_W.1$scores[,2],xlab="Scores FPC1",ylab="Scores FPC2"
 
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
-text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County$area, cex=1)
+text(pca_W.1$scores[,1],pca_W.1$scores[,2], labels=New_York_County_no_river$area, cex=1)
 x11()
 plot(pca_W.1$scores[,1],pca_W.1$scores[,2],type="n",xlab="Scores FPC1",
      ylab="Scores FPC2")
@@ -444,7 +460,7 @@ fdakma_example <- kma(
   y0=t(Xsp0),
   y1=t(Xsp1), 
   n.clust = 2, 
-  warping.method = 'dilation', # trasformation of an axis in order to do align
+  warping.method =  'NOalignment', # trasformation of an axis in order to do align
   similarity.method = 'd1.pearson',  # similarity computed as the cosine
   # between the first derivatives 
   # (correlation)
