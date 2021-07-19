@@ -21,7 +21,7 @@ Family Dollar Stores:Variety store company
 Dollar Tree:Variety store company
 ShopRite:Retail company
 Shell Oil:Fuel industry company
-Subway:metropolitana
+Subway:Subway
 Costco Wholesale Corp.:Variety store company
 Baskin Robbins:Restaurant company
 Hannaford Supermarkets:Supermarket company
@@ -42,7 +42,7 @@ C Town Supermarkets:Supermarket company
 Kwik Fill:Convenience store
 Dandy Mini Marts:Convenience store
 Foodtown:Supermarket company
-CITGO:Fuel industry company      
+CITGO:Fuel industry company
 Gulf Oil:Fuel industry company
 Pilot Flying J:Fuel industry company
 Fine Fare Supermarkets:Supermarket company
@@ -62,7 +62,7 @@ Taco Bell:Fast Food
 Staples:Retail company
 Carvel:Variety store company
 Fastrac:agriculture (fa trattori)
-Northwell Health:Medical field            
+Northwell Health:Medical field
 Dairy Queen:Fast Food
 Net Cost Market:Supermarket company
 Associated Supermarkets:Supermarket company
@@ -106,8 +106,14 @@ Fresenius Kidney Care:Medical field
 White Castle:Fast Food
 IHOP:Coffee
 IGA:Supermarket company
-Trinity Health: Medical field
+Trinity Health:Medical field
 KFC:Fast Food
 Advance Auto Parts:car tips
 Big Lots Stores:Retail company
 Checkers Drive-In Restaurants:Restaurant company
+1 Hotels:Hotel
+Shake Shack:Fast Food
+Courtyard by Marriott:Hotel
+10 Spot/MadRag:Variety store company
+D'Agostino:Supermarket company
+PetSmart:Variety store company
