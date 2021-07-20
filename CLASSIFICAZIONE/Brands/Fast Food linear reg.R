@@ -302,7 +302,7 @@ mod=lm(freq ~ BC.device + BC.dist_primary
 summary(mod) #Adjusted R-squared:0.2722 
 shapiro.test(mod$residuals) #  0.001881
 vif(mod)
-#se li tolgo entrambi, pessimo
+#se li tolgo entrambi, pessimA COME LA TERESA
 mod=lm(freq ~ BC.dist_primary
        + BC.median + BC.break + BC.lunch + BC.aft+ BC.dinner + BC.night)
 summary(mod) #Adjusted R-squared:  0.2469 
@@ -329,7 +329,7 @@ linearHypothesis(mod,
 mod=lm(freq ~ BC.device + BC.dist_home +BC.dist_primary
        + BC.median + BC.break + BC.lunch + BC.aft+ BC.dinner + BC.night)
 summary(mod) #i p-value migliorano, Radj rimane praticamente uguale
-shapiro.test(mod$residuals) #ppeggiora pvalue
+shapiro.test(mod$residuals) #pppeggiora pvalue
 x11()
 par(mfrow=c(2,2))
 plot(mod)
