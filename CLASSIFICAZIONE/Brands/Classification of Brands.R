@@ -8,6 +8,8 @@ load("Patterns_NY.RData")
 load("Cyber_Capital.RData")
 rm(patterns_ny)
 rm(census_metadata)
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+
 
 #libraries
 library(geosphere)
@@ -169,6 +171,9 @@ for (i in CBG_ny_index) {
   plot(st_geometry(census_blocks_ny$geometry[i]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = myColors[col])
   par(new=T)
 }
+par(new=T)
+plot(st_geometry(CBG_RIVER$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "lightblue")
+
 title(main = "Manhattan Categories", xlab = "Longitude", ylab = "Latitude")
 legend(legend=cols,"bottomright", fill=myColors)
 
@@ -193,6 +198,9 @@ for (i in CBG_ny_index) {
   plot(st_geometry(census_blocks_ny$geometry[i]), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = colors[index_brands])
   par(new=T)
 }
+par(new=T)
+plot(st_geometry(CBG_RIVER$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "lightblue")
+
 title(main = "Manhattan Brands' Names", xlab = "Longitude", ylab = "Latitude")
 legend(legend=BRANDS_MANHATTAN$Names[1:6],"bottomright", fill=colors[1:6])
 
@@ -213,6 +221,9 @@ for (i in CBG_ny_index) {
   par(new=T)
 }
 points(starbucks$longitude,starbucks$latitude, xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "red",pch=20)
+par(new=T)
+plot(st_geometry(CBG_RIVER$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "lightblue")
+
 title(main = "Starbucks in Manhattan", xlab = "Longitude", ylab = "Latitude")
 legend(legend="Starbucks","bottomright", fill="red")
 
@@ -236,6 +247,9 @@ for (i in CBG_ny_index) {
   par(new=T)
 }
 points(McDonalds_Manhattan$Longitude_new,McDonalds_Manhattan$Latitude_new, xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "red",pch=20)
+par(new=T)
+plot(st_geometry(CBG_RIVER$geometry), xlim = c(-74.1,-73.8), ylim = c(40.68,40.88), xlab = " ", ylab = " ",col = "lightblue")
+
 title(main = "McDonald's in Manhattan", xlab = "Longitude", ylab = "Latitude")
 legend(legend="McDonald's","bottomright", fill="red")
 
