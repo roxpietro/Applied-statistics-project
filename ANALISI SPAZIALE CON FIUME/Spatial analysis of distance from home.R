@@ -261,3 +261,35 @@ curve(v.f.est(x, C0=vlog.fit.nomax[2,2]+vlog.fit.nomax[1,2],
 
 dev.off()
 # scegliamo il modello non stazionario!
+
+
+
+####
+
+rm(rem)
+rem <- which(distance_from_home > 20000)
+rem = c(rem,525,526,527) #togliamo central park
+#GRAFICO HEATMAP PER PRESENZA DI PERSONE DURANTE IL GIORNO E LA NOTTE
+library(RColorBrewer)
+
+
+col_b <-brewer.pal(n = 11, name = 'PiYG'); 
+
+
+Breakfast = New_York_County_no_river$sum_breakfast[-rem]
+x11()
+#png(file = "glop distance from home.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=Breakfast))+scale_fill_gradient(low="darkolivegreen", high="forestgreen")
+
+
+
+
+col_b <-brewer.pal(n = 11, name = 'PiYG'); 
+
+Lunch = New_York_County_no_river$sum_lunch[-rem]
+x11()
+#png(file = "glop distance from home.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=Lunch))+scale_fill_gradient(low=col_b[5], high=col_b[1]) 
+
