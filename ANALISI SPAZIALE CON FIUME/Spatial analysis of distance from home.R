@@ -11,13 +11,21 @@ library(rgdal)
 
 
 ### GRAFICI su manhattan con colori rispetto a una quantità spatial ------------
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
-load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/NYC_no_river.RData")
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+# load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
+# 
+# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
 
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
-load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+
+load("C:/Users/roxpi/Desktop/R_directory/applied stat/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/roxpi/Desktop/R_directory/applied stat/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+load("C:/Users/roxpi/Desktop/R_directory/applied stat/Applied-statistics-project/DATASET/River_Dataset.RData")
+
+
+
 
 
 New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
@@ -52,8 +60,8 @@ distance__from_home <- distance_from_home[-rem]
 #png(file = "glop distance from home.png")
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance__from_home))+scale_fill_gradient(low="lightyellow", high="red") +
-  geom_sf(data = CBG_ny_no_river$geometry[rem,], fill="black")+
-  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300"),], fill="yellow") +
+  geom_sf(data = CBG_ny_no_river$geometry[rem], fill="black") +
+  geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300")], fill="yellow") +
   geom_sf(data = CBG_RIVER$geometry, fill="lightblue")
 dev.off()
 # non rimuovo dati
