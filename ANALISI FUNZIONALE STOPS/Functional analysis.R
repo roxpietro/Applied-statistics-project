@@ -143,20 +143,25 @@ plot.pca.fd(pca_W.1, nx=100, pointplot=TRUE, harm=c(1,2,3), expand=0, cycle=FALS
 
 x11()
 media <- mean.fd(data_W.fd.1)
-par(mfrow=c(1,2))
+par(mfrow=c(2,1))
 plot(media,lwd=2,ylim=c(-20,300),ylab='Stops by day',main='FPC1')
 lines(media+pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=3)
 lines(media-pca_W.1$harmonics[1,]*sqrt(pca_W.1$values[1]), col=2)
 abline(v=seq(1,30, by=7),lty=2)
-title("FPC1")
+title("FPC1 - 93.5% of variability")
 
 plot(media,lwd=2,ylim=c(0,170),ylab='Stops by day',main='FPC2')
 lines(media+pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=3)
 lines(media-pca_W.1$harmonics[2,]*sqrt(pca_W.1$values[2]), col=2)
 abline(v=seq(1,30, by=7), lty=2)
-title("FPC2")
+title("FPC2 - 2.4% of variability")
 # temperate climate or not
 
+plot(media,lwd=2,ylim=c(0,170),ylab='Stops by day',main='FPC2')
+lines(media+pca_W.1$harmonics[3,]*sqrt(pca_W.1$values[3]), col=3)
+lines(media-pca_W.1$harmonics[3,]*sqrt(pca_W.1$values[3]), col=2)
+abline(v=seq(1,30, by=7), lty=2)
+title("FPC3 - 1.3% of variability")
 
 # scatter plot of the scores
 x11()
