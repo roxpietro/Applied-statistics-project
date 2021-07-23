@@ -188,15 +188,15 @@ v.f.est<-function(x,C0, ...){C0-cov.spatial(x, ...)}
 
 x11()
 plot(v.log$dist,v.log$gamma,xlab='distance',ylab='semivariance',pch=19,col='red')
-curve(v.f.est(x, C0=fit_log[2,2]+fit_log[1,2], cov.pars=rbind(c(fit_log[2,2], fit_log[2,3]),c(fit_log[1,2], fit_log[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 20000,
+curve(v.f.est(x, C0=fit_log[2,2]+fit_log[1,2], cov.pars=rbind(c(fit_log[2,2], fit_log[2,3]),c(fit_log[1,2], fit_log[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 2000,
       xlab = "distance", ylab = expression(gamma(h)),
       main = "Variogram model",add=TRUE,col='red',lwd=2)
-
 points(v.dir$dist,v.dir$gamma,xlab='distance',ylab='semivariance',pch=19,col='steelblue')
 curve(v.f.est(x, C0=v.anis[2,2]+v.anis[1,2], 
-              cov.pars=rbind(c(v.anis[2,2], v.anis[2,3]),c(v.anis[1,2], v.anis[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 20000,
+              cov.pars=rbind(c(v.anis[2,2], v.anis[2,3]),c(v.anis[1,2], v.anis[1,3])), cov.model = c("exponential","pure.nugget")), from = 0.0001, to = 25000,
       xlab = "distance", ylab = expression(gamma(h)),
       main = "Variogram model",add=TRUE,col='steelblue',lwd=2)
+legend('bottomright', c('Variogram without anisotropy','Variogram with anisotropy'), fill= c('red', 'steelblue'))
 
 # meglio il modello con anisotropy
 

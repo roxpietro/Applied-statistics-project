@@ -95,13 +95,16 @@ x11()
 matplot(stops,type='l', main= "Stops by day - outliers")
 lines(stops[,92],lwd=4, col=2) 
 lines(stops[,532],lwd=4, col=1) 
- 
+hall= data.frame(x=74.0061, y=40.7128)
+#hall = which(CBG_ny_no_river$CensusBlockGroup=="360610029004")
 x11()
-ggplot() + 
+ggplot() +
   geom_sf(data = CBG_ny_no_river$geometry, fill="cornsilk")+
-  geom_sf(data = CBG_ny_no_river$geometry[out], fill="chartreuse")+
+  geom_sf(data = CBG_ny_no_river$geometry[out], fill="red")+
   geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
   ggtitle("Influential Points")
+
+
 
 # togliamo questi outliers
 stops<-stops[,-out]

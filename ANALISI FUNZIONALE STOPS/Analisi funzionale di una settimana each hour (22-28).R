@@ -238,7 +238,7 @@ x11()
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry) +
   geom_sf(data = CBG_ny_no_river$geometry[cbg_work], fill="red") +
-  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue") +ggtitle("CBG more frequented during 8.00-18.00")
+  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue") +ggtitle("CBG less frequented during 8.00-18.00")
 
 
 
@@ -255,7 +255,7 @@ abline(v=seq(1,168, by=24), lty=2)
 x11()
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry) +
-  geom_sf(data = CBG_ny_no_river$geometry[cbg_work], fill="red") +
+  geom_sf(data = CBG_ny_no_river$geometry[cbg_work], fill="blue") +
   geom_sf(data = CBG_RIVER$geometry, fill = "lightblue") +ggtitle("CBG more frequented during 21.00-24.00")
 
 

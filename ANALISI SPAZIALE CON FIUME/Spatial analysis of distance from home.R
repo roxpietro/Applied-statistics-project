@@ -120,7 +120,7 @@ vbc <- variogram(bc.distance_from_home ~ f_distance, data = data_spatial,boundar
 plot(vbc)
 vbc.fit <- fit.variogram(vbc, vgm(50, "Exp", 3000, 10)) #o convergence after 200 iterations: try different initial values?
 x11()
-png(file="variogram bc dfh.png")
+#png(file="variogram bc dfh.png")
 plot(vbc, vbc.fit, pch = 3)
 dev.off()
 vbc.fit
@@ -177,11 +177,11 @@ plot(vlog.nomax, vlog.fit.nomax, pch = 3)
 dev.off()
 vlog.fit.nomax
 #with box-cox
-vbc.nomax <- variogram(bc.dist_from_home ~ f_dist, data = data_spat,boundaries = c(0,200,seq(400,6000,450)))
+vbc.nomax <- variogram(bc.dist_from_home ~ f_dist, data = data_spat,boundaries = c(0,200,seq(400,5000,400)))
 plot(vbc.nomax)
 vbc.fit.nomax <- fit.variogram(vbc.nomax, vgm(5000, "Exp", 3000, 1000))
 x11()
-png(file="variogram bc dfh nomax.png")
+#png(file="variogram bc dfh nomax.png")
 plot(vbc.nomax, vbc.fit.nomax, pch = 3)
 dev.off()
 vbc.fit.nomax
