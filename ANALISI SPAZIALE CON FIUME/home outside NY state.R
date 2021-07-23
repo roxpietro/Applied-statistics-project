@@ -12,8 +12,8 @@ load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statist
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 
-New_York_County_no_river=New_York_County_no_river[order(New_York_County_no_river$area),]
-CBG_ny_no_river=CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
+New_York_County_no_river = New_York_County_no_river[order(New_York_County_no_river$area),]
+CBG_ny_no_river = CBG_ny_no_river[order(CBG_ny_no_river$CensusBlockGroup),]
 
 attach(New_York_County_no_river)
 
@@ -22,6 +22,7 @@ load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statist
 load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/Complete_dataset.RData")
 rm(patterns_ny)
 rm(census_metadata)
+
 # order patterns_ny and census_block_ny by CBG of New York County
 complete_dataset = complete_dataset[order(complete_dataset$area),]
 census_blocks_ny = census_blocks_ny[order(census_blocks_ny$CensusBlockGroup),]
@@ -29,6 +30,7 @@ census_blocks_ny = census_blocks_ny[order(census_blocks_ny$CensusBlockGroup),]
 remove <- which(census_blocks_ny$CensusBlockGroup %in% complete_dataset$area == FALSE)
 census_blocks_ny <- census_blocks_ny[-remove,]
 dim(census_blocks_ny)
+#misurare quante home di device home from areas vengono da fuori NY state
 inside <- c()
 tot_home <- c()
 home <- c()
@@ -171,24 +173,25 @@ coord.UTM.NY <- spTransform(coord, CRS("+proj=utm +zone=18 +datum=WGS84"))
 
 coord.x <- coord.UTM.NY@coords[,1]
 coord.y <- coord.UTM.NY@coords[,2]
-
+#remove <- which(inside>=1100 | outside>=300)
 rem_out <- which(outside>=300)
 rem_in <- which(inside>=1100)
-obj <-outside[-remove]
+home_out_NYstate <-outside[-remove]
 x11()
-#png(file = "glop distance from home.png")
+#png(file = "quantity home outside NY State.png")
 ggplot() + 
-  geom_sf(data = CBG_ny_no_river$geometry[-remove], aes(fill=obj))+scale_fill_gradient(low="yellow", high="red") +
-  geom_sf(data = CBG_ny_no_river$geometry[-remove]) +
-  geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="violet")+
-  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")
-dev.off()
+  geom_sf(data = CBG_ny_no_river$geometry[-remove], aes(fill=home_out_NYstate))+scale_fill_gradient(low="moccasin", high="red") +
+  geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="red4")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Quantity of devices home outside NY State')
+  dev.off()
 
 ####### guardiamo la percentuale di gente per igni cbg che viene da fuori ######
 out_NY_city <- rep(0, dim(New_York_County_no_river)[1]) #conterà quanti hanno casa fuori da manhattan
 out_NY_state <-rep(0, dim(New_York_County_no_river)[1]) #conterà quanti hanno casa fuori da ny state
 
-inside <- c()
+in_NY_state <- rep(0, dim(New_York_County_no_river)[1])
+in_NY_city<- rep(0, dim(New_York_County_no_river)[1])
 tot_home <- c()
 home <- c()
 for (j in 1:dim(New_York_County_no_river)[1]){
@@ -202,14 +205,243 @@ for (j in 1:dim(New_York_County_no_river)[1]){
     if (length(k_state) == 0){
       out_NY_state[j] <- sum(out_NY_state[j],device_home_areas[[j]][i])
     }
+    else{
+      in_NY_state[j] <- sum(in_NY_state[j], device_home_areas[[j]][i])
+    }
     if (length(k_city) == 0){
       out_NY_city[j] <- sum(out_NY_city[j],device_home_areas[[j]][i])
+    }
+    else{
+      in_NY_city[j] <- sum(in_NY_city[j], device_home_areas[[j]][i])
     }
   }
   inside[j] <- tot
   
 }
-
+#check mongolo
+which(out_NY_city ==0 & out_NY_state !=0)
+which(in_NY_city !=0 & in_NY_state ==0)
 outside <- tot_home-inside
 
+data <- data.frame(city = out_NY_city, state = out_NY_state)
+pairs(data)
+#facciamo percentuale
+perc.out_NY_city <- out_NY_city / sum_device_home_areas
+perc.out_NY_state <- out_NY_state / sum_device_home_areas
+perc.in_NY_city <- in_NY_city / sum_device_home_areas
+perc.in_NY_state <- in_NY_state / sum_device_home_areas
+
+percentage_out_Manhattan <- perc.out_NY_city
+x11()
+#png(file = "perc people outNYC .png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=percentage_out_Manhattan))+scale_fill_gradient(low="moccasin", high="red") +
+  #geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="red4")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Percentage of devices with HOME outside Manhattan')
+dev.off()
+
+percentage_out_NYState <- perc.out_NY_state
+x11()
+#png(file = "perc people outNYS.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=percentage_out_NYState))+scale_fill_gradient(low="moccasin", high="red") +
+  #geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="red4")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Percentage of devices with HOME outside NY State')
+dev.off()
+
+percentage_in_Manhattan <- perc.in_NY_city
+x11()
+#png(file = "perc people inNYC.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=percentage_in_Manhattan))+scale_fill_gradient(low="moccasin", high="red") +
+  #geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="red4")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Percentage of devices with HOME inside Manhattan')
+dev.off()
+
+percentage_in_NYState <- perc.in_NY_state
+x11()
+#png(file = "perc people inNYS.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, aes(fill=percentage_in_NYState))+scale_fill_gradient(low="moccasin", high="red") +
+  #geom_sf(data = CBG_ny_no_river$geometry[remove,], fill="red4")+
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Percentage of devices with HOME inside NY State')
+dev.off()
+
+#classifica zone turistiche e non??
+
+x11()
+hist(perc.in_NY_city)
+hist(perc.in_NY_state)
+hist(perc.out_NY_city)
+hist(perc.out_NY_state)
+
+library(mvtnorm)
+library(rgl)
+library(car)
+
+# data <- cbind(perc.in_NY_city, perc.in_NY_state, perc.out_NY_city, perc.out_NY_state)
+# iris.e <- dist(data, method='euclidean')
+# iris.es <- hclust(iris.e, method='single')
+# names(iris.es)
+# 
+# # plot of the dendrograms
+# x11()
+# # par(mfrow=c(1,3))
+# plot(iris.es, main='euclidean-single', hang=-0.1, xlab='', labels=F, cex=0.6, sub='')
+# rect.hclust(iris.es, k=2)
+# 
+# cluster.ec <- cutree(iris.ec, k=2) # euclidean-complete:
+# cluster.ec
+# coph.es <- cophenetic(iris.es)
+# # compute cophenetic coefficients CPCC
+# es <- cor(iris.e, coph.es)
+
+data <- cbind(perc.out_NY_city, perc.out_NY_state)
+iris.e <- dist(data, method='euclidean')
+iris.ea <- hclust(iris.e, method='average') #average linkage
+iris.ec <- hclust(iris.e, method='complete')
+iris.ew <- hclust(iris.e, method='ward.D2')
+
+names(iris.es)
+
+# plot of the dendrograms
+x11()
+# par(mfrow=c(1,3))
+plot(iris.ea, main='euclidean-average', hang=-0.1, xlab='', labels=F, cex=0.6, sub='')
+rect.hclust(iris.ea, k=2)
+rect.hclust(iris.ea, k=3)
+
+# plot of the dendrograms
+x11()
+# par(mfrow=c(1,3))
+plot(iris.ec, main='euclidean-complete', hang=-0.1, xlab='', labels=F, cex=0.6, sub='')
+rect.hclust(iris.ec, k=2)
+rect.hclust(iris.ec, k=3)
+
+# plot of the dendrograms
+x11()
+# par(mfrow=c(1,3))
+plot(iris.ew, main='euclidean-ward', hang=-0.1, xlab='', labels=F, cex=0.6, sub='')
+rect.hclust(iris.ew, k=2)
+rect.hclust(iris.ew, k=3)
+
+cluster.ea2 <- cutree(iris.ea, k=2)
+cluster.ea3 <- cutree(iris.ea, k=3)
+coph.ea <- cophenetic(iris.ea)
+# compute cophenetic coefficients CPCC
+ea <- cor(iris.e, coph.ea)
+
+cluster.ec2 <- cutree(iris.ec, k=2)
+cluster.ec3 <- cutree(iris.ec, k=3)
+coph.ec <- cophenetic(iris.ec)
+# compute cophenetic coefficients CPCC
+ec <- cor(iris.e, coph.ec)
+
+cluster.ew2 <- cutree(iris.ew, k=2)
+cluster.ew3 <- cutree(iris.ew, k=3)
+coph.ew <- cophenetic(iris.ew)
+# compute cophenetic coefficients CPCC
+ew <- cor(iris.e, coph.ew)
+
+cophenetic_coefficient <- data.frame(Eucl_Compl = ec, Eucl_Av = ea, Eucl_Ward = ew)
+
+setwd("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/ANALISI SPAZIALE CON FIUME/analysis home")
+#plot classificati
+#EUCLEDIAN-COMPLETE
+#k=2
+cluster.ec2
+my_col = rep('blue', 1092)
+my_col[which(cluster.ec2 == 1)] = 'red'
+#x11()
+png(file = "EC k2.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Complete k = 2')
+dev.off()
+
+png(file = "dati EC k2.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
+#k=3
+cluster.ec3
+my_col = rep('green', 1092)
+my_col[which(cluster.ec3 == 2)] = 'blue'
+my_col[which(cluster.ec3 == 3)] = 'red'
+#x11()
+png(file = "EC k3.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Complete k = 3') #con k=3 evidenza quelli che penso siano punti di attracco di barche ...
+dev.off()
+png(file = "dati EC k3.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
+#EUCLEDIAN-AVERAGE
+#k=2
+cluster.ec3
+my_col = rep('red', 1092)
+my_col[which(cluster.ec2 == 2)] = 'blue'
+#x11()
+png(file = "EA k2.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Average k = 2')
+dev.off()
+png(file = "dati EA k2.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
+#k=3
+cluster.ea2
+my_col = rep('green', 1092)
+my_col[which(cluster.ea3 == 2)] = 'red'
+my_col[which(cluster.ea3 == 3)] = 'blue'
+
+# x11()
+png(file = "EA k3.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Average k = 3') #con k=3 evidenza quelli che penso siano punti di attracco di barche ...
+dev.off()
+png(file = "dati EA k3.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
+#EUCLEDIAN-WARD
+#k=2
+cluster.ew2
+my_col = rep('red', 1092)
+my_col[which(cluster.ew2 == 2)] = 'blue'
+#x11()
+png(file = "EW k2.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Ward k = 2')
+sdev.off()
+png(file = "dati EW k2.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
+#k=3
+cluster.ew2
+my_col = rep('red', 1092)
+my_col[which(cluster.ew3 == 2)] = 'blue'
+my_col[which(cluster.ew3 == 3)] = 'green'
+
+#x11()
+png(file = "EW k3.png")
+ggplot() + 
+  geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  labs(title='Eucledian-Ward k = 3') #terza classe decisamente più randomica a livello spaziale
+dev.off()
+png(file = "dati EW k3.png")
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+dev.off()
 ################### guardiamo le diverse fasce orarie??? ###############
