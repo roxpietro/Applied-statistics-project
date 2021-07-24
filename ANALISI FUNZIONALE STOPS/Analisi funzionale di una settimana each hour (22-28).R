@@ -121,7 +121,7 @@ stops<-stops[,-out]
 
 
 x11()
-matplot(stops,type='l',main = "22/06 - 28/06")
+matplot(stops,type='l',main = "Stops by each hour ~ 22/06 - 28/06")
 abline(v=seq(1,168, by=24), lty=2)
 
 
@@ -231,7 +231,7 @@ cbg_work<-which(pca_W.1$scores[,2]>0)
 stops_cbg_work<-stops[,cbg_work]
 
 x11()
-matplot(stops_cbg_work,type='l',main = "More frequented CBG during 8.00-18.00 (22/06 - 28/06)")
+matplot(stops_cbg_work,type='l',main = "Less frequented CBG during 8.00-18.00 (22/06 - 28/06)")
 abline(v=seq(1,168, by=24), lty=2)
 
 x11()
