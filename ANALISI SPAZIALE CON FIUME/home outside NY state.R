@@ -392,10 +392,11 @@ png(file = "EA k2.png")
 ggplot() + 
   geom_sf(data = CBG_ny_no_river$geometry, fill = my_col) +
   geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
-  labs(title='Eucledian-Average k = 2')
+  labs(title='Map of the Clustering')
 dev.off()
 png(file = "dati EA k2.png")
-plot(perc.out_NY_city, perc.out_NY_state, col =my_col)
+plot(perc.out_NY_city, perc.out_NY_state, col =my_col, xlab="percentage of home outside Manhattan",
+     ylab="percentage of home outside New Yorl State", main="Eucledian-Average with k=2")
 dev.off()
 #k=3
 cluster.ea2
