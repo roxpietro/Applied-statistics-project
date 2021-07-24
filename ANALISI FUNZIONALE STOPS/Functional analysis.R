@@ -37,8 +37,8 @@ detach(New_York_County_no_river)
 stops<-t(stops)
 colnames(stops)<-New_York_County_no_river$area
 x11()
-matplot(stops,type='l' , main = "Stops by day")
 
+matplot(stops,type='l' , main = "Stops by day ~ 01/06 - 30/06")
 
 #B-SPLINES
 # Set parameters
@@ -110,7 +110,9 @@ ggplot() +
 stops<-stops[,-out]
 
 x11()
-matplot(stops,type='l', main = "Stops by Day")
+matplot(stops,type='l', main = "Stops by day ~ 01/06 - 30/06")
+abline(v=seq(1,30, by=7), lty=2,lwd=2)
+abline(v=seq(6,30, by=7), lty=3,lwd=0.5)
 
 abscissa<-1:30
 Xobs0<-stops

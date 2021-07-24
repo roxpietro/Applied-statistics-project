@@ -101,7 +101,14 @@ med_dwell_area=median_dwell[-which(geo$BlockGroup==0)]/area_cbg[-which(geo$Block
 x11()
 ggplot() + 
   geom_sf(data = geo$geometry[-which(geo$BlockGroup==0)], aes(fill=log(med_dwell_area)))+scale_fill_gradient(low="lightyellow", high="red") +
-  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue") +ggtitle("Erie County")
+  geom_sf(data = CBG_RIVER$geometry, fill = "lightblue") +
+  geom_point(aes(x=coord_cbuffalo.x_long, y=coord_cbuffalo.y_lat), colour="chartreuse")+
+  xlab("") + 
+  ylab("") +
+  ggtitle("Erie County", subtitle = "Buffalo Hall")+
+  theme(
+    plot.title = element_text(color = "black", size = 12),
+    plot.subtitle = element_text(color = "chartreuse"))
 
 
 hist(log(med_dwell_area), breaks=16, col="grey", main='Histogram of median dwell', prob = TRUE, xlab = 'median dwell') #asymmetric data
@@ -123,7 +130,7 @@ data_spatial <-data.frame(coord.x,coord.y, med_dwell_area, dist)
 coordinates(data_spatial)<-c('coord.x', 'coord.y')
 
 
-v.log <- variogram(log(med_dwell_area) ~ sqrt(dist), data = data_spatial,cutoff=20000)
+v.log <- variogram(log(med_dwell_area) ~ sqrt(dist), data = data_spatial,cutoff=25000)
 plot(v.log)
 
 fit_log=fit.variogram(v.log, vgm(1.5, model='Exp', 15000, nugget=1))

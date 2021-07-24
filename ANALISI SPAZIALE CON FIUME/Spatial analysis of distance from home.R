@@ -15,9 +15,9 @@ library(rgdal)
 # load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
 # load("/home/terri/Documenti/UNIVERSITA/STAT APP/progetto/gitcode/Applied-statistics-project/DATASET/River_Dataset.RData")
 # 
-# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
-# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
-# load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/NYC_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/CBG_NY_no_river.RData")
+load("C:/Users/franc/Desktop/PoliMI/Anno Accademico 2020-2021/Applied Statistics/Progetto/Applied-statistics-project/DATASET/River_Dataset.RData")
 
 
 load("C:/Users/roxpi/Desktop/R_directory/applied stat/Applied-statistics-project/DATASET/NYC_no_river.RData")
@@ -62,7 +62,12 @@ ggplot() +
   geom_sf(data = CBG_ny_no_river$geometry[-rem], aes(fill=distance__from_home))+scale_fill_gradient(low="lightyellow", high="red") +
   geom_sf(data = CBG_ny_no_river$geometry[rem], fill="black") +
   geom_sf(data = CBG_ny_no_river$geometry[which(CBG_ny_no_river$TractCode=="011300")], fill="yellow") +
-  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")
+  geom_sf(data = CBG_RIVER$geometry, fill="lightblue")+
+  ggtitle("Manhattan", subtitle = "Times Square")+
+  theme(
+    plot.title = element_text(color = "black", size = 12),
+    plot.subtitle = element_text(color = "yellow"))
+
 dev.off()
 # non rimuovo dati
 #f(s_i) = distanza da ipotetico centro di times square
